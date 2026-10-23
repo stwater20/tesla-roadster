@@ -1242,7 +1242,7 @@ bb.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(
 const bOff = () => { keys.boost = false; };
 bb.addEventListener('pointerup', bOff); bb.addEventListener('pointercancel', bOff); bb.addEventListener('lostpointercapture', bOff);
 
-const GAME_URL = location.protocol.startsWith('http') ? location.href.split('#')[0] : 'https://stwater20.github.io/tesla-roadster/';
+const GAME_URL = location.protocol.startsWith('http') ? location.href.split('#')[0] : 'https://tesla-roadster.sectools.tw/';
 function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2000); }
 async function share(withScore) {
   const text = withScore
