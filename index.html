@@ -94,6 +94,13 @@
   .grid .wide { grid-column:span 3; }
   .grid .wide .v { font-size:40px; }
   #newBest { color:var(--gold); font-family:"Russo One",sans-serif; letter-spacing:.2em; margin-bottom:10px; }
+  .links { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:16px; pointer-events:auto; }
+  .lbtn { font:700 14px "Noto Sans TC",sans-serif; color:#fff; text-decoration:none; cursor:pointer; padding:10px 18px; border-radius:999px;
+    border:1px solid var(--line); background:var(--glass); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  .lbtn.st { border-color:rgba(94,231,255,.5); color:var(--cyan); }
+  #toast { position:fixed; left:50%; bottom:90px; transform:translateX(-50%); background:rgba(0,0,0,.75); padding:8px 16px; border-radius:999px;
+    font-size:13px; opacity:0; transition:opacity .3s; pointer-events:none; z-index:10; }
+  #toast.on { opacity:1; }
   #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; text-align:center; padding:24px; background:#0b0b14; z-index:9; }
 </style>
 </head>
@@ -127,6 +134,10 @@
     <div class="help tc"><span>按住螢幕左/右半邊轉向</span><span>⚡ 按鈕 BOOST</span><span>空中轉向可翻滾</span></div>
     <button class="btn" id="startBtn" disabled>載入中…</button>
     <div class="best" id="bestTxt"></div>
+    <div class="links">
+      <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">🛡️ 更多工具 Sectools.tw</a>
+      <button class="lbtn share" type="button">📤 分享遊戲</button>
+    </div>
     <div class="fine">非官方粉絲作品 · 擦身超車、飛躍跳台、空中翻滾都能加分</div>
   </div>
 </div>
@@ -148,8 +159,13 @@
     </div>
     <button class="btn" id="againBtn">再來一次</button>
     <div class="best" id="rBest"></div>
+    <div class="links">
+      <button class="lbtn share" type="button" data-score="1">📤 分享我的成績</button>
+      <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">🛡️ Sectools.tw</a>
+    </div>
   </div>
 </div>
+<div id="toast"></div>
 <div id="err"><div><h2 style="color:#fff;font-size:28px">無法啟動 3D</h2><p class="reason" id="errMsg">你的瀏覽器不支援 WebGL，或無法載入 Three.js（需要網路）。</p></div></div>
 
 <script type="importmap">
@@ -1226,6 +1242,19 @@ bb.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(
 const bOff = () => { keys.boost = false; };
 bb.addEventListener('pointerup', bOff); bb.addEventListener('pointercancel', bOff); bb.addEventListener('lostpointercapture', bOff);
 
+const GAME_URL = location.protocol.startsWith('http') ? location.href.split('#')[0] : 'https://stwater20.github.io/tesla-roadster/';
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 2000); }
+async function share(withScore) {
+  const text = withScore
+    ? `我在 Roadster Rush 拿到 ${Math.floor(score).toLocaleString()} 分、跑了 ${((ps - startS) / 1000).toFixed(2)} km！你能超越嗎？🏎️⚡`
+    : 'Roadster Rush 極速電能狂飆：開 Roadster 在夕陽海岸大橋上狂飆！🏎️⚡';
+  try {
+    if (navigator.share) { await navigator.share({ title: 'Roadster Rush', text, url: GAME_URL }); return; }
+  } catch (e) { if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(`${text} ${GAME_URL}`); toast('已複製分享連結！'); }
+  catch (e) { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(GAME_URL)}`, '_blank', 'noopener'); }
+}
+document.querySelectorAll('.share').forEach(b => b.addEventListener('click', () => share(!!b.dataset.score)));
 $('startBtn').onclick = startRun;
 $('againBtn').onclick = startRun;
 $('resumeBtn').onclick = () => pause(false);
