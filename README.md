@@ -1,0 +1,39 @@
+# Roadster Rush 極速電能狂飆 🏎️⚡
+
+免費 3D 網頁賽車遊戲：駕駛白色電動超跑在夕陽海岸大橋上狂飆，閃避車流、擦身超車、飛躍跳台、空中翻滾。
+
+**▶ 立即遊玩：<https://tesla-roadster.sectools.tw/>**
+
+![Roadster Rush](og.jpg)
+
+## 玩法
+
+| | 電腦 | 手機 |
+|---|---|---|
+| 轉向 / 變換車道 | ← → 或 A / D | 按住螢幕左 / 右半邊 |
+| BOOST 加速 | Space、↑ 或 Shift | 左下角 ⚡ 按鈕 |
+| 煞車 | ↓ 或 S | — |
+| 空中翻滾 | 飛起來時按 ← → | 飛起來時按住左 / 右 |
+| 暫停 / 靜音 | P / M | 右上角按鈕 |
+
+## 得分
+
+- **NEAR MISS / SUPER CLOSE**：高速貼近其他車輛超車
+- **COMBO**：連續特技累積倍數，撞護欄會中斷
+- **跳台**：滯空時間、JUMP OVER 飛越車輛、BARREL ROLL 空中翻滾
+- **BOOST PAD**：藍色加速墊補充電量
+
+最佳紀錄達標可解鎖車色（烈焰紅、午夜黑、深海藍、香檳金、星際銀），遊戲結束可分享或下載成績圖。
+
+## 技術
+
+- 單一檔案 `index.html`，使用 [Three.js](https://threejs.org/) r160（CDN 載入）
+- 程式化生成道路、場景、車輛與音效（Web Audio），無外部素材
+- Sky 大氣散射、PMREM 環境反射、陰影、Bloom 光暈
+- 低效能裝置自動切換流暢模式，右上角可手動切換 HD / SD
+
+本機測試：直接用瀏覽器開啟 `index.html` 即可（需要網路載入 Three.js 與字型）。
+
+---
+
+非官方粉絲作品，與 Tesla, Inc. 無關。更多免費工具：[Sectools.tw](https://sectools.tw)
