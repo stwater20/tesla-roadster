@@ -179,6 +179,9 @@
   .aboutCard dt { font-weight:700; margin-top:8px; } .aboutCard dd { opacity:.85; }
   .aboutCard a { color:var(--cyan); } .aboutCard .more { margin-top:18px; }
   .closeAbout { position:absolute; top:14px; right:14px; }
+  .errBox { max-width:520px; } .errBox ol { text-align:left; margin:10px auto 14px; padding-left:22px; line-height:1.8; }
+  .errBox code { background:rgba(255,255,255,.1); padding:1px 6px; border-radius:4px; font-size:13px; }
+  .errDetail { margin-top:14px; font:12px ui-monospace,Menlo,monospace; opacity:.45; word-break:break-all; }
   #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; text-align:center; padding:24px; background:#0b0b14; z-index:9; }
 </style>
 </head>
@@ -286,8 +289,46 @@
 </div>
 <noscript><div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b0b14;padding:24px;text-align:center">Roadster Rush 是一款免費 3D 網頁賽車遊戲，需要啟用 JavaScript 才能遊玩。</div></noscript>
 <div id="toast"></div>
-<div id="err"><div><h2 style="color:#fff;font-size:28px">無法啟動 3D</h2><p class="reason" id="errMsg">你的瀏覽器不支援 WebGL，或無法載入 Three.js（需要網路）。</p></div></div>
+<div id="err"><div class="errBox">
+  <h2 style="color:#fff;font-size:28px" id="errTitle">無法啟動 3D</h2>
+  <div class="reason" id="errMsg"></div>
+  <button class="btn" type="button" onclick="location.reload()" style="font-size:16px;padding:12px 36px;margin-top:8px">重新載入</button>
+  <p class="errDetail" id="errDetail"></p>
+</div></div>
 
+<script>
+  // Boot diagnostics: tell WebGL problems apart from blocked/failed downloads.
+  (function () {
+    var shown = false, firstError = '';
+    window.showBootError = function (kind, detail) {
+      if (shown || window.__rrBooted) return; shown = true;
+      var t = document.getElementById('errTitle'), m = document.getElementById('errMsg'), d = document.getElementById('errDetail');
+      if (kind === 'webgl') {
+        t.textContent = '瀏覽器的 3D 加速目前無法使用';
+        m.innerHTML = '你的瀏覽器支援 WebGL，但現在被停用了，通常是「硬體加速」被關掉，或顯示卡被瀏覽器封鎖。<ol>' +
+          '<li>Chrome：開啟 <code>設定 → 系統</code>，打開「<b>可用時使用圖形加速功能</b>」，按「重新啟動」</li>' +
+          '<li>在網址列輸入 <code>chrome://gpu</code>，看 WebGL 那一行是否顯示 Hardware accelerated</li>' +
+          '<li>更新顯示卡驅動程式，或換 Edge / Safari / Firefox 試試</li></ol>';
+      } else {
+        t.textContent = '遊戲引擎載入失敗';
+        m.innerHTML = '無法從網路下載 3D 引擎（Three.js）。<ol>' +
+          '<li>確認網路連線正常後重新載入</li>' +
+          '<li>若有廣告封鎖或公司防火牆，請允許 <code>cdn.jsdelivr.net</code></li>' +
+          '<li>關閉可能干擾的瀏覽器擴充功能後再試</li></ol>';
+      }
+      d.textContent = (detail || firstError) ? '詳細錯誤：' + (detail || firstError) : '';
+      document.getElementById('err').style.display = 'flex';
+    };
+    // up-front capability check, before downloading anything
+    try {
+      var c = document.createElement('canvas');
+      if (!(c.getContext('webgl2') || c.getContext('webgl'))) { window.addEventListener('DOMContentLoaded', function () { window.showBootError('webgl', 'getContext("webgl") returned null'); }); }
+    } catch (e) {}
+    window.addEventListener('error', function (e) { if (!firstError) firstError = e.message || (e.target && e.target.src) || ''; }, true);
+    // if the module never finished booting, the engine download most likely failed
+    window.addEventListener('load', function () { setTimeout(function () { if (!window.__rrBooted) window.showBootError('load'); }, 8000); });
+  })();
+</script>
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
@@ -315,10 +356,15 @@ const wrapPi = a => { a = (a + Math.PI) % (Math.PI * 2); if (a < 0) a += Math.PI
 function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
 // ================= renderer / scene =================
-let renderer;
-try {
-  renderer = new THREE.WebGLRenderer({ antialias: !isTouch, powerPreference: 'high-performance' });
-} catch (e) { $('err').style.display = 'flex'; throw e; }
+let renderer, glError = null;
+for (const opts of [
+  { antialias: !isTouch, powerPreference: 'high-performance' },
+  { antialias: false, powerPreference: 'default' },
+  { antialias: false, powerPreference: 'low-power', failIfMajorPerformanceCaveat: false },
+]) {
+  try { renderer = new THREE.WebGLRenderer(opts); break; } catch (e) { glError = e; }
+}
+if (!renderer) { window.showBootError('webgl', glError && glError.message); throw glError; }
 renderer.setPixelRatio(Math.min(devicePixelRatio || 1, isTouch ? 1.5 : 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1523,18 +1569,11 @@ const sb = $('startBtn'); sb.disabled = false; sb.textContent = 'START 出發';
 frame();
 
 // debug hook for automated checks
+window.__rrBooted = true;
 window.__rr = { get state() { return state; }, get speed() { return speed; }, get score() { return score; }, keys,
   get lat() { return lat; }, set lat(v) { lat = v; }, get ps() { return ps; }, set ps(v) { ps = v; },
   set autoPause(v) { autoPause = v; }, buildCard: () => buildCard(), snap: () => { composer.render(); return renderer.domElement.toDataURL('image/png'); }, get ramps() { return ramps; }, get traffic() { return traffic.length; }, renderer, bloom, scene, SU, hemi, sun, M };
 </script>
-<script>
-  // surface module load failures (e.g. offline CDN)
-  window.addEventListener('error', e => {
-    const t = e.target;
-    if ((t && t.tagName === 'SCRIPT') || /import|module|three|Failed to resolve/i.test(e.message || '')) {
-      document.getElementById('err').style.display = 'flex';
-    }
-  }, true);
-</script>
+
 </body>
 </html>
