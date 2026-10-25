@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roadster Rush 攻略：高分技巧、三寶應對與噴射飛行教學｜免費 3D 賽車網頁遊戲</title>
+<meta name="description" content="Roadster Rush 完整攻略：操作方式、NEAR MISS 與 COMBO 得分機制、噴射推進器飛行教學、三寶（切入、急煞、蛇行、逆向）應對方法、車色解鎖條件與成就列表。">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://tesla-roadster.sectools.tw/guide.html">
+<meta name="theme-color" content="#2a1640">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Sectools.tw">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:url" content="https://tesla-roadster.sectools.tw/guide.html">
+<meta property="og:title" content="Roadster Rush 攻略：高分技巧、三寶應對與噴射飛行教學">
+<meta property="og:description" content="擦身超車、COMBO 連擊、噴射飛越車陣、閃過三寶與逆向車的完整高分攻略。">
+<meta property="og:image" content="https://tesla-roadster.sectools.tw/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "Roadster Rush 攻略：高分技巧、三寶應對與噴射飛行教學",
+      "image": "https://tesla-roadster.sectools.tw/og.jpg",
+      "datePublished": "2026-10-26",
+      "dateModified": "2026-10-26",
+      "inLanguage": "zh-TW",
+      "author": { "@type": "Organization", "name": "Sectools.tw", "url": "https://sectools.tw" },
+      "publisher": { "@type": "Organization", "name": "Sectools.tw", "url": "https://sectools.tw" },
+      "mainEntityOfPage": "https://tesla-roadster.sectools.tw/guide.html",
+      "about": { "@type": "VideoGame", "name": "Roadster Rush 極速電能狂飆", "url": "https://tesla-roadster.sectools.tw/" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Roadster Rush", "item": "https://tesla-roadster.sectools.tw/" },
+        { "@type": "ListItem", "position": 2, "name": "攻略", "item": "https://tesla-roadster.sectools.tw/guide.html" }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root { --cyan:#5ee7ff; --red:#ff2d4a; --gold:#ffd24a; --bg:#0d0c18; --card:#16152a; --line:rgba(255,255,255,.12); --ink:#eceaf4; --mute:#a9a6bd; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.8 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; }
+  a { color:var(--cyan); }
+  header.hero { position:relative; min-height:340px; display:flex; align-items:flex-end; padding:32px 16px;
+    background:linear-gradient(180deg, rgba(13,12,24,.1), var(--bg)), url(og.jpg) center/cover; }
+  .wrap { max-width:820px; margin:0 auto; width:100%; }
+  .crumb { font-size:13px; color:var(--mute); } .crumb a { color:var(--mute); }
+  h1 { font-size:clamp(28px,5vw,42px); line-height:1.25; margin:8px 0 12px; font-weight:900; }
+  .lead { color:#d8d5e6; margin:0 0 18px; }
+  .cta { display:inline-block; font-family:"Russo One","Noto Sans TC",sans-serif; letter-spacing:.08em; color:#fff; text-decoration:none;
+    background:linear-gradient(90deg,#ff2d4a,#ff6a3d); padding:14px 34px; border-radius:999px; box-shadow:0 10px 30px rgba(255,45,74,.4); }
+  main { padding:8px 16px 48px; }
+  nav.toc { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px 18px; margin:20px 0 8px; font-size:15px; }
+  nav.toc ol { margin:6px 0 0; padding-left:22px; columns:2; column-gap:28px; }
+  @media (max-width:560px) { nav.toc ol { columns:1; } }
+  h2 { font-size:24px; margin:40px 0 10px; padding-top:8px; border-top:1px solid var(--line); font-weight:900; }
+  h2 span { color:var(--cyan); font-family:"Russo One",sans-serif; margin-right:8px; }
+  h3 { font-size:18px; margin:22px 0 6px; color:var(--gold); }
+  table { width:100%; border-collapse:collapse; margin:10px 0 6px; font-size:15px; background:var(--card); border-radius:12px; overflow:hidden; }
+  th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { background:rgba(94,231,255,.1); color:#fff; font-weight:700; white-space:nowrap; }
+  tr:last-child td { border-bottom:0; }
+  kbd { font:600 12px ui-monospace,Menlo,monospace; border:1px solid rgba(255,255,255,.3); border-radius:5px; padding:1px 6px; background:rgba(255,255,255,.08); }
+  .tip { background:linear-gradient(90deg, rgba(255,210,74,.12), transparent); border-left:3px solid var(--gold); padding:10px 14px; border-radius:0 10px 10px 0; margin:14px 0; }
+  ol.tips li { margin:8px 0; }
+  .end { text-align:center; margin:48px 0 0; padding:28px 16px; background:var(--card); border:1px solid var(--line); border-radius:16px; }
+  footer { text-align:center; color:var(--mute); font-size:13px; padding:24px 16px 40px; }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="crumb"><a href="/">Roadster Rush</a> › 攻略</div>
+    <h1>Roadster Rush 攻略：<br>高分技巧、三寶應對與噴射飛行教學</h1>
+    <p class="lead">從新手操作到衝破兩萬分，這篇整理所有得分機制與實戰技巧。看完直接上路驗收！</p>
+    <a class="cta" href="/">立即開始遊戲 ›</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="toc" aria-label="目錄">
+    <strong>目錄</strong>
+    <ol>
+      <li><a href="#controls">基本操作</a></li>
+      <li><a href="#scoring">得分機制</a></li>
+      <li><a href="#tips">十個高分技巧</a></li>
+      <li><a href="#jet">噴射推進器教學</a></li>
+      <li><a href="#sanbao">三寶種類與應對</a></li>
+      <li><a href="#difficulty">難度曲線</a></li>
+      <li><a href="#unlocks">車色解鎖與成就</a></li>
+      <li><a href="#faq">常見問題</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="controls"><span>01</span>基本操作</h2>
+  <p>Roadster Rush 是免下載的 3D 網頁賽車遊戲，手機與電腦瀏覽器都能直接玩。車子會自動前進，你只要專心閃車、衝刺和飛行。</p>
+  <table>
+    <tr><th>動作</th><th>電腦</th><th>手機</th></tr>
+    <tr><td>變換車道</td><td><kbd>←</kbd> <kbd>→</kbd> 或 <kbd>A</kbd> <kbd>D</kbd></td><td>按住螢幕左半邊或右半邊</td></tr>
+    <tr><td>噴射推進器</td><td><kbd>↑</kbd>、<kbd>W</kbd> 或 <kbd>J</kbd></td><td>左下角 JET 按鈕</td></tr>
+    <tr><td>BOOST 加速</td><td><kbd>Space</kbd> 或 <kbd>Shift</kbd></td><td>右下角 BOOST 按鈕</td></tr>
+    <tr><td>煞車</td><td><kbd>↓</kbd> 或 <kbd>S</kbd></td><td>—</td></tr>
+    <tr><td>空中翻滾</td><td>飛躍跳台時按 <kbd>←</kbd> <kbd>→</kbd></td><td>飛躍時按住左右半邊</td></tr>
+    <tr><td>暫停／靜音</td><td><kbd>P</kbd>／<kbd>M</kbd></td><td>右上角按鈕</td></tr>
+  </table>
+  <p class="tip">手機玩法建議雙手持握：左手拇指負責噴射、右手拇指負責 BOOST，轉向則是按住螢幕左右兩側。</p>
+
+  <h2 id="scoring"><span>02</span>得分機制</h2>
+  <p>分數由「行駛距離」加上「特技獎勵」組成，而所有特技獎勵都會乘上目前的 <strong>COMBO 連擊倍數</strong>。</p>
+  <table>
+    <tr><th>特技</th><th>觸發方式</th><th>基礎分</th></tr>
+    <tr><td>NEAR MISS</td><td>高速貼近其他車輛超車</td><td>100</td></tr>
+    <tr><td>SUPER CLOSE</td><td>以極近距離（不到半公尺）超車</td><td>250</td></tr>
+    <tr><td>閃過三寶</td><td>擦身超過頭頂「三寶」標誌的車</td><td>200～500</td></tr>
+    <tr><td>閃過逆向車</td><td>與迎面而來的逆向車擦身而過</td><td>500～900</td></tr>
+    <tr><td>AIR／FLIGHT</td><td>跳台滯空或噴射飛行，依滯空秒數計分</td><td>每秒 350</td></tr>
+    <tr><td>BARREL ROLL</td><td>飛躍跳台時在空中翻滾一圈</td><td>每圈 1,500</td></tr>
+    <tr><td>JUMP OVER</td><td>從其他車輛正上方飛越</td><td>400</td></tr>
+  </table>
+  <p>COMBO 在 4 秒內沒有新特技就會歸零，撞到護欄也會立刻中斷。開 BOOST 時，距離分數還會多 50%。</p>
+
+  <h2 id="tips"><span>03</span>十個高分技巧</h2>
+  <ol class="tips">
+    <li><strong>貼線超車：</strong>NEAR MISS 的判定距離約一公尺，盡量讓車身擦著別人的車邊過去，SUPER CLOSE 分數是兩倍半。</li>
+    <li><strong>串連擊：</strong>連續擦身超車，倍數會一路疊上去。車流越密，越容易串出高倍數。</li>
+    <li><strong>BOOST 留給長直線：</strong>BOOST 越開越快，但也越難閃車；看到前方車距拉開再開。</li>
+    <li><strong>擦身補能量：</strong>每次擦身超車都會補 BOOST 電量和噴射燃料，越敢貼，資源越多。</li>
+    <li><strong>跳台必翻滾：</strong>一次 BARREL ROLL 就有 1,500 分，但落地前記得把車身轉正，否則會翻車。</li>
+    <li><strong>藍色加速墊：</strong>壓過去立刻補 35% BOOST 並加速，適合銜接下一段連擊。</li>
+    <li><strong>噴射救命：</strong>前方被車牆擋住時，按住 JET 直接從上方飛過去，還能拿 JUMP OVER。</li>
+    <li><strong>不要黏護欄：</strong>擦護欄會減速、中斷連擊，比撞車划算，但很傷分數。</li>
+    <li><strong>看遠不看近：</strong>注意 100 公尺外的車流和三寶標誌，提早換到空的車道。</li>
+    <li><strong>畫質選 SD：</strong>手機若覺得卡，右上角切到 SD 流暢模式，操作反應更準。</li>
+  </ol>
+
+  <h2 id="jet"><span>04</span>噴射推進器教學</h2>
+  <p>噴射推進器致敬新一代 Roadster 的冷氣推進技術：按住 JET，車底四個噴嘴會噴出白色氣柱，讓跑車離地約 6 公尺懸浮飛行。</p>
+  <h3>飛行時能做什麼</h3>
+  <ul>
+    <li>左右鍵變成「推力平移」，可以在空中換車道。</li>
+    <li>車身會自動維持水平，放開按鍵就自然落地，不用擔心翻車。</li>
+    <li>從車頂飛過會觸發 JUMP OVER，落地時依飛行時間結算 FLIGHT 分數。</li>
+  </ul>
+  <h3>燃料管理</h3>
+  <p>燃料大約可以連續噴 3.5 秒，在地面時會慢慢回充，每次擦身超車再補 8%。燃料用光後要回充到 15% 才能再次啟動，所以別等到最後一刻才用。</p>
+
+  <h2 id="sanbao"><span>05</span>三寶種類與應對</h2>
+  <p>跑過 1 公里後，路上會開始出現頭頂紅色「三寶」標誌的車，越後面越多。三寶做出危險動作時會閃黃燈，給你反應時間。</p>
+  <table>
+    <tr><th>類型</th><th>出現距離</th><th>行為</th><th>應對方式</th></tr>
+    <tr><td>龜速占內線</td><td>1 km 起</td><td>在最左側內線慢慢開</td><td>提早換到右側車道</td></tr>
+    <tr><td>突然切入</td><td>1 km 起</td><td>你靠近時猛然切進你的車道</td><td>看到黃燈閃爍立刻反向閃避，或直接噴射飛過</td></tr>
+    <tr><td>急煞</td><td>1.5 km 起</td><td>在你正前方突然煞到幾乎停住</td><td>別長時間跟在三寶正後方</td></tr>
+    <tr><td>蛇行</td><td>2.5 km 起</td><td>跨越車道線左右搖擺</td><td>抓準它擺向另一側的時機超車</td></tr>
+    <tr><td>逆向</td><td>3 km 起</td><td>迎面衝過來並按喇叭</td><td>聽到喇叭就確認車道，擦身閃過可拿最高 900 分</td></tr>
+  </table>
+  <p class="tip">閃過三寶的分數是一般車的兩倍。高手會刻意貼著三寶超車來衝分！</p>
+
+  <h2 id="difficulty"><span>06</span>難度曲線</h2>
+  <p>遊戲會隨距離慢慢變難：開局約 11 台車、前 1 公里一定留有空車道；2 公里約 20 台，之後逐漸增加到 30 台以上。速度也會從約 223 km/h 逐步提升到 330 km/h，開 BOOST 時可以突破 450 km/h。</p>
+
+  <h2 id="unlocks"><span>07</span>車色解鎖與成就</h2>
+  <table>
+    <tr><th>車色</th><th>解鎖條件（最佳紀錄）</th></tr>
+    <tr><td>珍珠白</td><td>預設</td></tr>
+    <tr><td>烈焰紅</td><td>3,000 分</td></tr>
+    <tr><td>午夜黑</td><td>8,000 分</td></tr>
+    <tr><td>深海藍</td><td>15,000 分</td></tr>
+    <tr><td>香檳金</td><td>30,000 分</td></tr>
+    <tr><td>星際銀</td><td>50,000 分</td></tr>
+  </table>
+  <p>另外還有 10 個成就等你解鎖，例如「三寶剋星」（單局閃過 10 台三寶）、「死裡逃生」（閃過逆向車）、「光速」（時速突破 400 km/h）。在開始畫面點「成就」就能查看進度。</p>
+
+  <h2 id="faq"><span>08</span>常見問題</h2>
+  <h3>Roadster Rush 要錢嗎？</h3>
+  <p>完全免費，不需要註冊、不用下載 App。手機可以用瀏覽器的「加入主畫面」，像 App 一樣全螢幕遊玩。</p>
+  <h3>畫面一片黑或顯示「3D 加速無法使用」？</h3>
+  <p>通常是瀏覽器的硬體加速被關閉。Chrome 請到「設定 → 系統」開啟「可用時使用圖形加速功能」後重新啟動。</p>
+  <h3>分數會上傳嗎？</h3>
+  <p>目前排行榜與成就只存在你自己的瀏覽器中，不會上傳任何資料。</p>
+  <h3>這是 Tesla 官方遊戲嗎？</h3>
+  <p>不是。Roadster Rush 是非官方的粉絲作品，與 Tesla, Inc. 無關。</p>
+
+  <div class="end">
+    <p><strong>攻略看完了，換你上路！</strong></p>
+    <a class="cta" href="/">開始遊戲 ›</a>
+    <p style="margin-top:18px;font-size:14px;color:var(--mute)">更多免費實用工具，請造訪 <a href="https://sectools.tw" target="_blank" rel="noopener">Sectools.tw</a></p>
+  </div>
+</main>
+<footer>Roadster Rush · 非官方粉絲作品 · <a href="https://sectools.tw" target="_blank" rel="noopener">Sectools.tw</a></footer>
+</body>
+</html>

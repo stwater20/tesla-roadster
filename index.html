@@ -25,6 +25,12 @@
       "operatingSystem": "Any",
       "inLanguage": "zh-TW",
       "isAccessibleForFree": true,
+      "datePublished": "2026-10-23",
+      "dateModified": "2026-10-26",
+      "screenshot": "https://tesla-roadster.sectools.tw/og.jpg",
+      "keywords": "Roadster 遊戲, 賽車遊戲, 網頁遊戲, 免費線上遊戲, 3D 賽車, 手機遊戲, 電動車遊戲",
+      "playMode": "SinglePlayer",
+      "sameAs": "https://tesla-roadster.sectools.tw/guide.html",
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
       "publisher": { "@type": "Organization", "name": "Sectools.tw", "url": "https://sectools.tw" }
     },
@@ -56,7 +62,14 @@
 <meta name="twitter:title" content="Roadster Rush 極速電能狂飆 🏎️⚡">
 <meta name="twitter:description" content="夕陽海岸大橋上的 3D 極速狂飆！擦身超車、飛躍跳台、空中翻滾，你能跑多遠？">
 <meta name="twitter:image" content="https://tesla-roadster.sectools.tw/og.jpg">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🏎️</text></svg>">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Roadster Rush">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Noto+Sans+TC:wght@500;700;900&display=swap" rel="stylesheet">
@@ -213,6 +226,23 @@
   .promoTxt { flex:1; display:flex; flex-direction:column; gap:2px; font-size:12px; line-height:1.45; }
   .promoTxt b { font-size:14px; } .promoTxt span { opacity:.8; }
   .promoGo { flex:none; font-weight:900; font-size:13px; color:#0b0b14; background:var(--cyan); padding:8px 12px; border-radius:999px; white-space:nowrap; }
+  #hint { position:absolute; left:50%; top:calc(126px + env(safe-area-inset-top)); transform:translate(-50%,-6px); max-width:90%;
+    background:rgba(8,10,22,.7); border:1px solid rgba(94,231,255,.5); border-radius:999px; padding:9px 18px; font-weight:700; font-size:15px;
+    text-align:center; opacity:0; transition:opacity .3s, transform .3s; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  #hint.on { opacity:1; transform:translate(-50%,0); }
+  #achvToast { position:fixed; left:50%; top:calc(14px + env(safe-area-inset-top)); transform:translate(-50%,-140%); z-index:8; display:flex; gap:10px; align-items:center;
+    background:linear-gradient(90deg,#3a2a00,#6b4a00); border:1px solid var(--gold); border-radius:14px; padding:10px 16px; box-shadow:0 10px 30px rgba(0,0,0,.4);
+    transition:transform .4s cubic-bezier(.2,.9,.3,1.2); pointer-events:none; }
+  #achvToast.on { transform:translate(-50%,0); }
+  #achvToast .k { font-size:11px; letter-spacing:.15em; color:var(--gold); font-weight:900; }
+  #achvToast .n { font-weight:900; font-size:16px; }
+  .achvList { list-style:none; padding:0; margin:10px 0 0; display:grid; gap:8px; }
+  .achvList li { display:flex; gap:12px; align-items:center; padding:10px 12px; border-radius:12px; background:rgba(255,255,255,.05); border:1px solid var(--line); }
+  .achvList li .ic { width:34px; height:34px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.08); color:#777; }
+  .achvList li.got .ic { background:var(--gold); color:#2a1d00; }
+  .achvList li b { display:block; } .achvList li span { font-size:13px; opacity:.75; }
+  .achvList li:not(.got) { opacity:.6; }
+  #skipHint { position:fixed; left:0; right:0; bottom:calc(26px + env(safe-area-inset-bottom)); text-align:center; font-size:13px; opacity:.7; pointer-events:none; display:none; letter-spacing:.1em; }
   #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; text-align:center; padding:24px; background:#0b0b14; z-index:9; }
 </style>
 </head>
@@ -226,6 +256,7 @@
   <div id="score" class="num">0</div>
   <div id="combo" class="num">COMBO ×2</div>
   <div id="pops"></div>
+  <div id="hint"></div>
   <div id="topBtns">
     <button class="ibtn" id="qualBtn" title="畫質切換">HD</button>
     <button class="ibtn" id="muteBtn" title="靜音 (M)" aria-label="靜音"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
@@ -236,6 +267,8 @@
   <div id="speedBox"><div id="speed" class="num">0</div><div class="unit num">KM/H</div></div>
 </div>
 <div id="countdown"></div>
+<div id="skipHint">點擊畫面或按任意鍵略過</div>
+<div id="achvToast"><svg viewBox="0 0 24 24" width="26" height="26" fill="#ffd24a" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg><div><div class="k">成就解鎖</div><div class="n" id="achvName"></div></div></div>
 
 <div class="screen" id="menu">
   <div class="logo">
@@ -253,6 +286,8 @@
       <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">更多工具 Sectools.tw</a>
       <button class="lbtn share" type="button">分享遊戲</button>
       <button class="lbtn" type="button" id="aboutBtn">遊戲介紹</button>
+      <a class="lbtn" href="guide.html">攻略</a>
+      <button class="lbtn" type="button" id="achvBtn">成就</button>
     </div>
     <div class="fine">非官方粉絲作品 · 擦身超車、飛躍跳台、空中翻滾都能加分</div>
   </div>
@@ -324,10 +359,18 @@
       <dt>手機會卡怎麼辦？</dt><dd>遊戲會自動偵測效能切換流暢模式，也可以按右上角 HD / SD 手動切換畫質。</dd>
       <dt>是 Tesla 官方遊戲嗎？</dt><dd>不是，這是非官方粉絲作品，與 Tesla, Inc. 無關。</dd>
     </dl>
-    <p class="more">更多免費實用工具，歡迎造訪 <a href="https://sectools.tw" target="_blank" rel="noopener">Sectools.tw</a>。</p>
+    <p class="more">想拿高分？完整技巧請看 <a href="guide.html">Roadster Rush 攻略：高分技巧、三寶應對與噴射飛行教學</a>。<br>更多免費實用工具，歡迎造訪 <a href="https://sectools.tw" target="_blank" rel="noopener">Sectools.tw</a>。</p>
   </article>
 </div>
 <noscript><div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b0b14;padding:24px;text-align:center">Roadster Rush 是一款免費 3D 網頁賽車遊戲，需要啟用 JavaScript 才能遊玩。</div></noscript>
+<div class="screen center hidden" id="achv" role="dialog" aria-labelledby="achvTitle">
+  <div class="card aboutCard">
+    <button class="ibtn closeAbout" id="achvClose" aria-label="關閉"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg></button>
+    <h2 id="achvTitle">成就</h2>
+    <p id="achvCount" style="opacity:.75"></p>
+    <ul class="achvList" id="achvList"></ul>
+  </div>
+</div>
 <div id="toast"></div>
 <div id="err"><div class="errBox">
   <h2 style="color:#fff;font-size:28px" id="errTitle">無法啟動 3D</h2>
@@ -1072,7 +1115,7 @@ function clearWorld() {
 // ================= state =================
 let state = 'loading';
 let ps = 0, lat = 0, latV = 0, y = 0, vy = 0, speed = 0, roll = 0, air = false, airTime = 0, onRamp = null;
-let jet = 100, jetting = false, flight = false, jetLock = false, sbWarned = false, nextWrong = 0;
+let jet = 100, jetting = false, flight = false, jetLock = false, sbWarned = false, nextWrong = 0, sbDodged = 0;
 let boost = 60, boosting = false, score = 0, combo = 0, comboT = 0, nearCount = 0, topSpeed = 0, startS = 0;
 let shake = 0, timeScale = 1, crashT = 0, crashReason = '', nextRamp = 0, nextPad = 0, scrapeT = 0, cdT = 0, menuT = 0;
 const crashPhys = { vs: 0, vlat: 0, vy: 0, w: new THREE.Vector3() };
@@ -1084,7 +1127,8 @@ let camLat = 0, camY = 2.6;
 function resetRun() {
   clearWorld();
   ps = 0; lat = laneX(1); latV = 0; y = 0; vy = 0; speed = 0; roll = 0; air = false; airTime = 0; onRamp = null;
-  jet = 100; jetting = false; flight = false; jetLock = false; sbWarned = false; nextWrong = 0;
+  jet = 100; jetting = false; flight = false; jetLock = false; sbWarned = false; nextWrong = 0; sbDodged = 0;
+  removeIntroMesh(); player.rotation.set(0, 0, 0); player.userData.shadow.visible = true;
   boost = 60; boosting = false; score = 0; combo = 0; comboT = 0; nearCount = 0; topSpeed = 0; startS = 0;
   shake = 0; timeScale = 1; crashT = 0; nextRamp = 520; nextPad = 300; scrapeT = 0;
   player.userData.chassis.rotation.set(0, 0, 0);
@@ -1103,7 +1147,7 @@ function popup(text, sub, cls = '') {
   setTimeout(() => el.remove(), 1500);
 }
 function addScore(pts) { score += pts * Math.max(1, combo); }
-function bumpCombo() { combo = combo ? combo + 1 : 1; comboT = 4; }
+function bumpCombo() { combo = combo ? combo + 1 : 1; comboT = 4; if (combo >= 5) unlock('combo5'); }
 function flash(a) { const f = $('flash'); f.style.transition = 'none'; f.style.opacity = a; requestAnimationFrame(() => { f.style.transition = 'opacity .5s'; f.style.opacity = 0; }); }
 function updateHUD() {
   hud.score.textContent = Math.floor(score).toLocaleString();
@@ -1141,7 +1185,7 @@ function initAudio() {
 }
 function updateAudio() {
   if (!AC) return;
-  const t = AC.currentTime, p = speed / 110, live = !muted && (state === 'play' || state === 'countdown');
+  const t = AC.currentTime, p = speed / 110, live = !muted && (state === 'play' || state === 'countdown' || state === 'intro');
   oscA.frequency.setTargetAtTime(40 + p * 170, t, 0.05);
   oscB.frequency.setTargetAtTime(160 + p * 900 * (boosting ? 1.3 : 1), t, 0.05);
   motorG.gain.setTargetAtTime(live ? 0.012 + p * 0.03 : 0, t, 0.1);
@@ -1178,12 +1222,134 @@ const sfx = {
 
 // ================= flow =================
 function show(id, on) { $(id).classList.toggle('hidden', !on); }
+function buzz(p) { if (isTouch && navigator.vibrate) try { navigator.vibrate(p); } catch (e) {} }
+
+// ----- achievements -----
+const ACHV = [
+  ['near', '第一次擦身', '完成一次 NEAR MISS'], ['combo5', '連擊大師', 'COMBO 達到 ×5'],
+  ['fly', '起飛！', '用噴射推進器飛起來'], ['roll', '空中翻滾', '完成一次 BARREL ROLL'],
+  ['over', '飛越車頂', '完成一次 JUMP OVER'], ['sb10', '三寶剋星', '單局閃過 10 台三寶'],
+  ['wrong', '死裡逃生', '閃過逆向車'], ['km5', '長途旅行', '單局跑完 5 km'],
+  ['speed400', '光速', '時速突破 400 km/h'], ['score20k', '公路之王', '單局拿到 20,000 分'],
+];
+let achv = new Set();
+try { achv = new Set(JSON.parse(localStorage.getItem('roadster-rush-achv') || '[]')); } catch (e) {}
+let achvTimer = null;
+function unlock(id) {
+  if (achv.has(id)) return;
+  achv.add(id); try { localStorage.setItem('roadster-rush-achv', JSON.stringify([...achv])); } catch (e) {}
+  $('achvName').textContent = ACHV.find(a => a[0] === id)[1];
+  const t = $('achvToast'); t.classList.add('on'); clearTimeout(achvTimer); achvTimer = setTimeout(() => t.classList.remove('on'), 2600);
+  tone(988, 0, .12, 'triangle', .06); tone(1319, .1, .25, 'triangle', .06); buzz(20); renderAchv();
+}
+function renderAchv() {
+  $('achvBtn').textContent = `成就 ${achv.size}/${ACHV.length}`;
+  $('achvCount').textContent = `已解鎖 ${achv.size} / ${ACHV.length}`;
+  $('achvList').innerHTML = ACHV.map(([id, n, d]) => `<li class="${achv.has(id) ? 'got' : ''}"><span class="ic"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z"/></svg></span><div><b>${n}</b><span>${d}</span></div></li>`).join('');
+}
+
+// ----- first-run hints -----
+let tutDone = false, playTime = 0, hintIdx = 0, hintTimer = null;
+try { tutDone = localStorage.getItem('roadster-rush-tut') === '1'; } catch (e) {}
+const HINTS = [
+  [0.8, isTouch ? '按住螢幕左右半邊變換車道' : '用 ← → 變換車道'],
+  [5.5, '貼著其他車超車 = NEAR MISS 加分'],
+  [10.5, isTouch ? '按住左下 JET 飛起來，越過車陣！' : '按住 ↑ 啟動噴射推進器，飛越車陣！'],
+  [16, isTouch ? '右下 BOOST 全速衝刺' : '按 SPACE 啟動 BOOST 全速衝刺'],
+  [22, '頭頂「三寶」的車特別危險，閃過分數加倍'],
+];
+function updateHints(dt) {
+  playTime += dt;
+  if (tutDone || hintIdx >= HINTS.length || playTime < HINTS[hintIdx][0]) return;
+  const h = $('hint'); h.textContent = HINTS[hintIdx][1]; h.classList.add('on');
+  clearTimeout(hintTimer); hintTimer = setTimeout(() => h.classList.remove('on'), 3800);
+  hintIdx++;
+}
+
+// ----- opening stunt: the 2026 reveal's curling wall ramp, then a 180° roll landing -----
+const CURL_L = 46, CURL_R = 4.2, CURL_MAX = Math.PI * 0.94, CURL_LAT = 2.2;
+let introDone = false, introPhase = 0, introT = 0, introRoll = 0, introRollRate = 0, introMesh = null, introCam = false;
+const curlTheta = s => { const u = clamp(s / CURL_L, 0, 1); return CURL_MAX * u * u * (3 - 2 * u); };
+function buildCurl() {
+  const g = new THREE.Group(), N = 70, pos = [], uv = [], idx = [], A = new THREE.Vector3(), d = 1.35 / CURL_R;
+  for (let i = 0; i <= N; i++) {
+    const sv = CURL_L * i / N, th = curlTheta(sv);
+    for (const [k, a] of [[0, th - d], [1, th + d]]) {
+      roadPoint(sv, CURL_LAT - (CURL_R + 0.02) * Math.sin(a), CURL_R - (CURL_R + 0.02) * Math.cos(a), A);
+      pos.push(A.x, A.y, A.z); uv.push(k, sv / 6);
+    }
+  }
+  for (let i = 0; i < N; i++) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  geo.setIndex(idx); geo.computeVertexNormals();
+  const mat = M.ramp.clone(); mat.side = THREE.DoubleSide;
+  const strip = new THREE.Mesh(geo, mat); strip.castShadow = true; strip.receiveShadow = true; g.add(strip);
+  const posts = [];
+  for (let sv = 3; sv < CURL_L; sv += 2.5) {
+    const th = curlTheta(sv), ly = CURL_R - (CURL_R + 0.25) * Math.cos(th);
+    if (ly < 0.8) continue;
+    roadPoint(sv, CURL_LAT - (CURL_R + 0.25) * Math.sin(th), ly / 2, A);
+    posts.push(new THREE.BoxGeometry(0.14, ly, 0.14).translate(A.x, A.y, A.z));
+  }
+  if (posts.length) { const pm = new THREE.Mesh(merge(posts), M.metal); pm.castShadow = true; g.add(pm); }
+  return g;
+}
+function removeIntroMesh() {
+  if (!introMesh) return;
+  scene.remove(introMesh); introMesh.traverse(o => { if (o.isMesh) { o.geometry.dispose(); if (o.material !== M.metal) o.material.dispose(); } }); introMesh = null;
+}
+function startIntro() {
+  traffic = traffic.filter(c => { if (c.s < 320) { scene.remove(c.mesh); return false; } return true; });
+  ps = -70; lat = CURL_LAT; y = 0; vy = 0; speed = 4; air = false; introPhase = 0; introT = 0; introRoll = 0; introCam = false;
+  introMesh = buildCurl(); scene.add(introMesh);
+  state = 'intro'; $('skipHint').style.display = 'block'; $('countdown').innerHTML = '';
+}
+function updateIntro(dt) {
+  introT += dt;
+  if (introPhase === 0) {
+    speed = Math.min(34, speed + 26 * dt); ps += speed * dt;
+    if (ps >= 0) {
+      introRoll = curlTheta(ps); lat = CURL_LAT - CURL_R * Math.sin(introRoll); y = CURL_R * (1 - Math.cos(introRoll));
+      if (ps >= CURL_L) {
+        introPhase = 1; air = true; vy = 0;
+        introRollRate = (Math.PI * 2 - introRoll) / Math.sqrt(2 * y / 24);
+        sfx.ramp(); popup('ROADSTER', '2026 REVEAL STUNT', 'gold');
+      }
+    } else if (introT < 1.4) {
+      for (const sd of [-1, 1]) if (Math.random() < 0.7) emit(rearWheelPos(sd, tmpV), { vel: new THREE.Vector3(sd * rnd(0.5, 2), rnd(0.5, 1.5), rnd(1, 3)), life: rnd(1, 1.6), size: 0.7, grow: 4, color: '#e9e4de', opacity: 0.45 });
+    }
+  } else if (introPhase === 1) {
+    ps += speed * dt; vy -= 24 * dt; y += vy * dt; introRoll += introRollRate * dt;
+    if (y <= 0) {
+      y = 0; vy = 0; air = false; introRoll = 0; introPhase = 2; introT = 0; shake = 0.9; sfx.land(); buzz(40);
+      for (const sd of [-1, 1]) for (let i = 0; i < 10; i++) emit(rearWheelPos(sd, tmpV), { vel: new THREE.Vector3(sd * rnd(1, 5), rnd(0.5, 2), rnd(2, 6)), life: rnd(0.6, 1.2), size: 0.8, grow: 4, color: '#d8d2cc', opacity: 0.6 });
+    }
+  } else {
+    ps += speed * dt; lat = damp(lat, laneX(2), 2.5, dt);
+    if (introT > 0.7) finishIntro();
+  }
+}
+function finishIntro() {
+  introDone = true; state = 'play'; startS = ps; air = false; roll = 0; vy = 0; introRoll = 0; playTime = 0; hintIdx = 0;
+  player.rotation.set(0, yawAt(ps), 0); player.userData.shadow.visible = true;
+  $('skipHint').style.display = 'none'; $('hud').classList.add('on');
+  showCount('GO!'); sfx.beep(true);
+  setTimeout(() => { if ($('countdown').textContent === 'GO!') $('countdown').innerHTML = ''; }, 900);
+}
+function skipIntro() {
+  if (state !== 'intro') return;
+  ps = Math.max(ps, CURL_L + 25); lat = laneX(2); y = 0; vy = 0; speed = Math.max(speed, 30);
+  finishIntro();
+}
 let lastCd = 3;
 function showCount(t) { $('countdown').innerHTML = `<span>${t}</span>`; }
 function startRun() {
   initAudio(); resetRun();
-  state = 'countdown'; cdT = 3.2; lastCd = 3;
   show('menu', false); show('overScreen', false); show('pauseScreen', false);
+  playTime = 0; hintIdx = 0;
+  if (!introDone) { startIntro(); return; }
+  state = 'countdown'; cdT = 3.2; lastCd = 3;
   $('hud').classList.add('on');
   showCount('3'); sfx.beep(false);
 }
@@ -1211,11 +1377,13 @@ function crash(reason, car) {
   const p = roadPoint(ps, lat, 0.8);
   for (let i = 0; i < 26; i++) emit(p, { vel: new THREE.Vector3(rnd(-6, 6), rnd(1, 7), rnd(-6, 6)), life: rnd(0.8, 1.8), size: rnd(1, 2), grow: rnd(4, 7), color: pick(['#cfcfcf', '#9a9a9a', '#f3e3d0']), opacity: 0.7 });
   for (let i = 0; i < 30; i++) emit(p, { vel: new THREE.Vector3(rnd(-14, 14), rnd(2, 12), rnd(-14, 14)), life: rnd(0.3, 0.7), size: 0.25, grow: 0.05, color: '#ffb347', add: true, opacity: 1, drag: 0.5, gravity: 20 });
-  sfx.crash(); popup('CRASH!', reason, 'red big');
+  sfx.crash(); popup('CRASH!', reason, 'red big'); buzz([80, 40, 140]);
   snapTaken = false;
 }
 function gameOver() {
   state = 'over';
+  if (!tutDone) { tutDone = true; try { localStorage.setItem('roadster-rush-tut', '1'); } catch (e) {} }
+  $('hint').classList.remove('on');
   const s = Math.floor(score), isBest = s > best, prevBest = best;
   if (isBest) { best = s; try { localStorage.setItem('roadster-rush-best', String(best)); } catch (e) {} }
   const unlocked = PAINTS.filter(p => p.need > prevBest && p.need <= best);
@@ -1259,6 +1427,11 @@ function updatePlay(dt) {
   if (jetting) { jet = Math.max(0, jet - 28 * dt); if (!wasJetting) sfx.jetOn(); }
   else if (!air) jet = Math.min(100, jet + 9 * dt);
   topSpeed = Math.max(topSpeed, speed);
+  if (speed * 3.6 >= 400) unlock('speed400');
+  if (ps - startS >= 5000) unlock('km5');
+  if (score >= 20000) unlock('score20k');
+  updateHints(dt);
+  if (introMesh && ps > CURL_L + 150) removeIntroMesh();
 
   const prevS = ps;
   ps += speed * dt;
@@ -1285,7 +1458,7 @@ function updatePlay(dt) {
 
   if (jetting && !air && !onRamp) {
     air = true; vy = Math.max(vy, 6); airTime = 0; roll = 0; flight = true; shake = 0.5;
-    popup('THRUSTERS!', '噴射推進器啟動', 'cyan');
+    popup('THRUSTERS!', '噴射推進器啟動', 'cyan'); unlock('fly');
     for (let i = 0; i < 18; i++) { const a = Math.random() * Math.PI * 2; emit(roadPoint(ps, lat, 0.2, tmpV), { vel: new THREE.Vector3(Math.cos(a) * rnd(6, 12), rnd(0.2, 1), Math.sin(a) * rnd(6, 12)), life: rnd(0.6, 1.1), size: 1, grow: 4.5, color: '#e9e4de', opacity: 0.45 }); }
   }
   if (jetting && air) flight = true;
@@ -1311,6 +1484,7 @@ function updatePlay(dt) {
       if (airTime > 0.45) {
         const pts = Math.round(airTime * 350) + flips * 1500;
         bumpCombo(); addScore(pts); boost = Math.min(100, boost + 15 + flips * 15);
+        if (flips) unlock('roll');
         if (flips) { popup(flips > 1 ? `BARREL ROLL ×${flips}` : 'BARREL ROLL!', `+${pts * Math.max(1, combo)}`, 'gold big'); sfx.stunt(); }
         else popup(`${flight ? 'FLIGHT' : 'AIR'} ${airTime.toFixed(1)}s`, `+${pts * Math.max(1, combo)}`, 'cyan');
       }
@@ -1333,7 +1507,7 @@ function updatePlay(dt) {
   // boost pads
   for (const p of pads) {
     if (!p.used && !air && ps > p.s && ps < p.s + 7 && Math.abs(lat - p.lat) < 2.2) {
-      p.used = true; boost = Math.min(100, boost + 35); speed += 9; sfx.pad(); popup('BOOST PAD', '+35%', 'cyan'); shake = 0.4; flash(0.12);
+      p.used = true; boost = Math.min(100, boost + 35); speed += 9; buzz(25); sfx.pad(); popup('BOOST PAD', '+35%', 'cyan'); shake = 0.4; flash(0.12);
     }
   }
 
@@ -1345,13 +1519,13 @@ function updatePlay(dt) {
     if (!c.passed && ps - PL / 2 > c.s + c.len / 2) {
       c.passed = true;
       const gap = dl - (PW + c.wid) / 2;
-      if (y > c.h) { bumpCombo(); addScore(400); popup('JUMP OVER!', `+${400 * combo}`, 'gold'); sfx.stunt(); }
+      if (y > c.h) { bumpCombo(); addScore(400); popup('JUMP OVER!', `+${400 * combo}`, 'gold'); sfx.stunt(); unlock('over'); }
       else if (gap < 1.1 && speed > c.speed + 4) {
-        bumpCombo(); nearCount++; jet = Math.min(100, jet + 8);
+        bumpCombo(); nearCount++; jet = Math.min(100, jet + 8); unlock('near'); buzz(15);
         const close = gap < 0.45;
         let pts = close ? 250 : 100, label = close ? 'SUPER CLOSE!' : 'NEAR MISS';
-        if (c.sb === 'wrong') { pts = close ? 900 : 500; label = '閃過逆向車！'; }
-        else if (c.sb) { pts *= 2; label = close ? '極限閃過三寶！' : '閃過三寶'; }
+        if (c.sb === 'wrong') { pts = close ? 900 : 500; label = '閃過逆向車！'; unlock('wrong'); }
+        else if (c.sb) { if (++sbDodged >= 10) unlock('sb10'); pts *= 2; label = close ? '極限閃過三寶！' : '閃過三寶'; }
         addScore(pts); boost = Math.min(100, boost + (close ? 18 : 10));
         popup(label, `+${pts * combo}`, close || c.sb ? 'gold' : '');
         sfx.near(); shake = Math.max(shake, 0.15);
@@ -1491,6 +1665,13 @@ function updateCrashed(dt, real) {
 function placePlayer(dt) {
   player.position.copy(roadPoint(ps, lat, y));
   const ch = player.userData.chassis;
+  if (state === 'intro') {
+    // roll about the wheel contact point so the car hugs the curling wall
+    player.rotation.set(0, yawAt(ps), -introRoll); ch.rotation.set(0, 0, 0);
+    for (const w of player.userData.wheels) w.spin.rotation.x -= speed * dt / 0.36;
+    player.userData.shadow.visible = introRoll < 0.2 && y < 0.5;
+    return;
+  }
   if (state !== 'crashed' && state !== 'over') {
     player.rotation.y = yawAt(ps) - Math.atan2(latV, Math.max(8, speed)) * 1.1;
     ch.rotation.z = -roll - (air ? 0 : latV * 0.006);
@@ -1511,6 +1692,7 @@ function placePlayer(dt) {
   M.tail.emissiveIntensity = keys.brake ? 16 : 7;
 }
 
+const _ip = new THREE.Vector3(), _il = new THREE.Vector3();
 function updateCamera(dt, real) {
   const portrait = camera.aspect < 1;
   if (state === 'menu' || state === 'loading') {
@@ -1521,6 +1703,20 @@ function updateCamera(dt, real) {
     camera.position.y = 1.6 + Math.sin(menuT * 0.3) * 0.4;
     camera.lookAt(player.position.x, 0.8, player.position.z);
     camera.fov = portrait ? 70 : 50; camera.updateProjectionMatrix();
+    return;
+  }
+  if (state === 'intro') {
+    const back = portrait ? 8.6 : 7.4, up = portrait ? 3.3 : 2.75;
+    let k = 4;
+    if (introPhase === 0 && ps < -22) { roadPoint(ps + 11, CURL_LAT + 5.5, 1.5, _ip); roadPoint(ps, lat, 0.8, _il); k = 10; }
+    else if (introPhase === 0) { roadPoint(clamp(ps + 9, 4, CURL_L + 4), CURL_LAT + (portrait ? 14 : 11), 4.2, _ip); _il.copy(player.position); k = 3.5; }
+    else if (introPhase === 1) { roadPoint(ps - 9, lat + 6, 5, _ip); _il.copy(player.position); k = 3; }
+    else { roadPoint(ps - back, lat * 0.85, up, _ip); roadPoint(ps + 9, lat * 0.9, 0.9, _il); k = 6; }
+    if (!introCam) { camera.position.copy(_ip); camLook.copy(_il); introCam = true; }
+    camera.position.lerp(_ip, 1 - Math.exp(-k * real)); camLook.lerp(_il, 1 - Math.exp(-8 * real));
+    camera.lookAt(camLook);
+    camera.fov = damp(camera.fov, portrait ? 72 : 58, 4, real); camera.updateProjectionMatrix();
+    camLat = lat * 0.85; camY = up;
     return;
   }
   if (state === 'crashed' || state === 'over') {
@@ -1584,11 +1780,17 @@ function updateWorldAnchors(t) {
 const clock = new THREE.Clock();
 let elapsed = 0;
 function frame() {
-  const real = Math.min(0.05, clock.getDelta());
+  simulate(Math.min(0.05, clock.getDelta()));
+  composer.render();
+  if (snapReq) { snapReq = false; captureSnap(); }
+  requestAnimationFrame(frame);
+}
+function simulate(real) {
   elapsed += real;
-  const dt = real * (state === 'crashed' ? timeScale : 1);
+  const dt = real * (state === 'crashed' ? timeScale : state === 'intro' && introPhase === 1 ? 0.45 : 1);
 
   if (state === 'play') updatePlay(dt);
+  else if (state === 'intro') updateIntro(dt);
   else if (state === 'countdown') {
     cdT -= real;
     const n = Math.ceil(cdT - 0.2);
@@ -1611,13 +1813,10 @@ function frame() {
   if (skyCam.fov !== camera.fov || skyCam.aspect !== camera.aspect) { skyCam.fov = camera.fov; skyCam.aspect = camera.aspect; skyCam.updateProjectionMatrix(); }
   if (state === 'play' || state === 'crashed' || state === 'countdown') updateHUD();
   updateAudio();
-  composer.render();
-  if (snapReq) { snapReq = false; captureSnap(); }
   if (autoQ.active && state === 'play') {
     autoQ.t += real; autoQ.n++;
     if (autoQ.t > 4) { autoQ.active = false; if (autoQ.n / autoQ.t < 45) { setQuality('low'); toast('已自動切換為流暢畫質（右上角可切回 HD）'); } }
   }
-  requestAnimationFrame(frame);
 }
 
 function resize() {
@@ -1631,12 +1830,14 @@ addEventListener('resize', resize);
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowDown: 'brake', KeyS: 'brake',
   Space: 'boost', ShiftLeft: 'boost', ShiftRight: 'boost', ArrowUp: 'jet', KeyW: 'jet', KeyJ: 'jet' };
 addEventListener('keydown', e => {
+  if (state === 'intro' && !e.repeat) { skipIntro(); return; }
   const k = KEYMAP[e.code];
   if (k) { keys[k] = true; e.preventDefault(); }
   if (e.code === 'KeyP' || e.code === 'Escape') { if (state === 'play') pause(true); else if (state === 'pause') pause(false); }
   if (e.code === 'KeyM') setMute(!muted);
+  if (e.code === 'Escape' && !$('achv').classList.contains('hidden')) { show('achv', false); return; }
   if (e.code === 'Escape' && !$('about').classList.contains('hidden')) { show('about', false); return; }
-  if ((e.code === 'Enter' || (e.code === 'Space' && !e.repeat)) && (state === 'menu' || state === 'over') && $('about').classList.contains('hidden')) startRun();
+  if ((e.code === 'Enter' || (e.code === 'Space' && !e.repeat)) && (state === 'menu' || state === 'over') && $('about').classList.contains('hidden') && $('achv').classList.contains('hidden')) startRun();
 });
 addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) keys[k] = false; });
 addEventListener('blur', () => { for (const k in keys) keys[k] = false; });
@@ -1651,6 +1852,7 @@ function syncTouch() {
 }
 const cvs = renderer.domElement;
 cvs.addEventListener('pointerdown', e => {
+  if (state === 'intro') { skipIntro(); return; }
   if (e.pointerType === 'mouse') return;
   touches.set(e.pointerId, e.clientX < innerWidth / 2 ? -1 : 1); syncTouch();
 });
@@ -1787,6 +1989,9 @@ async function share(withScore) {
 document.querySelectorAll('.share').forEach(b => b.addEventListener('click', () => share(!!b.dataset.score)));
 $('startBtn').onclick = startRun;
 $('aboutBtn').onclick = () => show('about', true);
+$('achvBtn').onclick = () => show('achv', true);
+$('achvClose').onclick = () => show('achv', false);
+$('achv').addEventListener('click', e => { if (e.target.id === 'achv') show('achv', false); });
 $('aboutClose').onclick = () => show('about', false);
 $('about').addEventListener('click', e => { if (e.target.id === 'about') show('about', false); });
 $('againBtn').onclick = startRun;
@@ -1799,7 +2004,7 @@ resetRun(); clearWorld();
 updateChunks(0); updateChunks(0); updateChunks(0); updateChunks(0); updateChunks(0);
 placePlayer(0);
 state = 'menu';
-applyPaint(); renderPaints();
+applyPaint(); renderPaints(); renderAchv();
 if (qualPref) setQuality(qualPref);
 const sb = $('startBtn'); sb.disabled = false; sb.textContent = 'START 出發';
 frame();
@@ -1808,7 +2013,7 @@ frame();
 window.__rrBooted = true;
 window.__rr = { get state() { return state; }, get speed() { return speed; }, get score() { return score; }, keys,
   get lat() { return lat; }, set lat(v) { lat = v; }, get ps() { return ps; }, set ps(v) { ps = v; },
-  set autoPause(v) { autoPause = v; }, buildCard: () => buildCard(), snap: () => { composer.render(); return renderer.domElement.toDataURL('image/png'); }, get ramps() { return ramps; }, get y() { return y; }, get jet() { return jet; }, get traffic() { return traffic.length; }, get cars() { return traffic; }, renderer, bloom, scene, SU, hemi, sun, M };
+  set autoPause(v) { autoPause = v; }, buildCard: () => buildCard(), snap: () => { composer.render(); return renderer.domElement.toDataURL('image/png'); }, get ramps() { return ramps; }, get y() { return y; }, step: n => { autoQ.active = false; for (let i = 0; i < n; i++) simulate(1 / 60); composer.render(); }, get introPhase() { return introPhase; }, skipIntro: () => skipIntro(), get jet() { return jet; }, get traffic() { return traffic.length; }, get cars() { return traffic; }, renderer, bloom, scene, SU, hemi, sun, M };
 </script>
 
 </body>
