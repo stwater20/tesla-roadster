@@ -82,15 +82,15 @@
   #combo.on { opacity:1; transform:translateX(-50%) scale(1); }
   #dist { position:absolute; top:calc(22px + env(safe-area-inset-top)); left:18px; font-size:22px; text-shadow:0 2px 8px rgba(0,0,0,.5); }
   #dist small { font-size:13px; opacity:.75; margin-left:3px; }
-  #speedBox { position:absolute; right:22px; bottom:calc(22px + env(safe-area-inset-bottom)); text-align:right;
+  #speedBox { position:absolute; right:22px; bottom:calc(132px + env(safe-area-inset-bottom)); text-align:right;
     text-shadow:0 3px 14px rgba(0,0,0,.55); }
-  #speed { font-size:64px; line-height:.9; font-style:italic; }
+  #speed { font-size:56px; line-height:.9; font-style:italic; }
   #speedBox .unit { font-size:14px; letter-spacing:.25em; opacity:.8; }
   #topBtns { position:absolute; top:calc(16px + env(safe-area-inset-top)); right:16px; display:flex; gap:8px; pointer-events:auto; }
   .ibtn { width:42px; height:42px; border-radius:50%; border:1px solid var(--line); background:var(--glass); color:#fff;
     font-size:16px; cursor:pointer; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
 
-  #boostBtn { position:absolute; left:22px; bottom:calc(22px + env(safe-area-inset-bottom)); width:104px; height:104px; border-radius:50%;
+  #boostBtn { position:absolute; right:20px; bottom:calc(20px + env(safe-area-inset-bottom)); width:100px; height:100px; border-radius:50%;
     pointer-events:auto; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-direction:column;
     background:conic-gradient(var(--cyan) calc(var(--b,50)*1%), rgba(255,255,255,.14) 0);
     box-shadow:0 0 0 0 rgba(94,231,255,0); transition:box-shadow .2s; }
@@ -101,14 +101,27 @@
   #boostBtn .k { font-size:10px; opacity:.55; margin-top:2px; letter-spacing:.1em; }
   #boostBtn.active { box-shadow:0 0 34px 6px rgba(94,231,255,.55); }
   #boostBtn.empty .ic { color:#777; }
-  #jetBtn { position:absolute; left:34px; bottom:calc(140px + env(safe-area-inset-bottom)); width:80px; height:80px; border-radius:50%;
+  #jetBtn { position:absolute; left:20px; bottom:calc(20px + env(safe-area-inset-bottom)); width:100px; height:100px; border-radius:50%;
     pointer-events:auto; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-direction:column;
     background:conic-gradient(#ffb15e calc(var(--j,100)*1%), rgba(255,255,255,.14) 0); transition:box-shadow .2s; }
-  #jetBtn::before { content:""; position:absolute; inset:5px; border-radius:50%; background:rgba(8,14,30,.72); backdrop-filter:blur(6px); }
+  #jetBtn::before { content:""; position:absolute; inset:6px; border-radius:50%; background:rgba(8,14,30,.72); backdrop-filter:blur(6px); }
   #jetBtn > * { position:relative; }
-  #jetBtn .ic { font-size:24px; line-height:1; }
-  #jetBtn .t { font-family:"Russo One",sans-serif; font-size:10px; letter-spacing:.1em; margin-top:2px; }
-  #jetBtn .k { font-size:9px; opacity:.55; margin-top:1px; }
+  #jetBtn .ic { font-size:30px; line-height:1; color:#ffb15e; }
+  #jetBtn .t { font-family:"Russo One",sans-serif; font-size:13px; letter-spacing:.14em; margin-top:2px; }
+  #jetBtn .k { font-size:10px; opacity:.55; margin-top:2px; letter-spacing:.1em; }
+  /* narrow portrait phones: score sits below the top button row */
+  @media (max-width:560px) {
+    #score { top:calc(64px + env(safe-area-inset-top)); font-size:40px; }
+    #combo { top:calc(114px + env(safe-area-inset-top)); }
+    #pops { top:30%; }
+  }
+  /* short landscape screens (phones held sideways) */
+  @media (max-height:520px) {
+    #jetBtn, #boostBtn { width:82px; height:82px; }
+    #boostBtn .ic svg, #jetBtn .ic svg { width:24px; height:24px; }
+    #speedBox { bottom:calc(110px + env(safe-area-inset-bottom)); } #speed { font-size:42px; }
+    #score { font-size:34px; } #combo { top:calc(54px + env(safe-area-inset-top)); }
+  }
   #jetBtn.active { box-shadow:0 0 30px 6px rgba(255,177,94,.55); }
   #jetBtn.empty { filter:grayscale(1) brightness(.7); }
   body.touch #jetBtn .k { display:none; }
@@ -218,7 +231,7 @@
     <button class="ibtn" id="muteBtn" title="靜音 (M)" aria-label="靜音"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
     <button class="ibtn" id="pauseBtn" title="暫停 (P)" aria-label="暫停"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5v14"/><path d="M15 5v14"/></svg></button>
   </div>
-  <div id="jetBtn"><span class="ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 11 6-6 6 6"/><path d="m6 18 6-6 6 6"/></svg></span><span class="t">JET</span><span class="k">↑ / W</span></div>
+  <div id="jetBtn"><span class="ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 11 6-6 6 6"/><path d="m6 18 6-6 6 6"/></svg></span><span class="t">JET</span><span class="k">↑ / W</span></div>
   <div id="boostBtn"><span class="ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="t">BOOST</span><span class="k">SPACE</span></div>
   <div id="speedBox"><div id="speed" class="num">0</div><div class="unit num">KM/H</div></div>
 </div>
@@ -282,7 +295,7 @@
     <h3>怎麼玩</h3>
     <ul>
       <li><b>電腦：</b>← → 方向鍵（或 A / D）變換車道，空白鍵或 Shift 啟動 BOOST，↑ / W 啟動噴射推進器，↓ 煞車，P 暫停，M 靜音。</li>
-      <li><b>手機：</b>按住螢幕左半邊或右半邊轉向，左下角 BOOST 按鈕加速、JET 按鈕啟動噴射推進器，車子會自動加速。</li>
+      <li><b>手機：</b>按住螢幕左半邊或右半邊轉向，左下角 JET 按鈕啟動噴射推進器、右下角 BOOST 按鈕加速，車子會自動加速。</li>
       <li><b>噴射推進器：</b>致敬 Roadster 傳說中的 SpaceX 套件！按住就能讓車子離地飛起來，飛越整排車流，空中可左右平移。燃料用完會落地，在地面時會自動回充，擦身超車也能補充燃料。</li>
       <li><b>空中：</b>衝上橘色跳台飛起來後，按左右可以做出空中翻滾，落地時要把車身轉正。</li>
     </ul>
