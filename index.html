@@ -153,7 +153,7 @@
   h2 { font-family:"Russo One","Noto Sans TC",sans-serif; font-style:italic; font-size:56px; color:var(--red); text-shadow:0 0 30px rgba(255,45,74,.5); }
   .reason { opacity:.85; margin:4px 0 20px; }
   .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:0 auto 26px; max-width:460px; }
-  .grid div { background:var(--glass); border:1px solid var(--line); border-radius:14px; padding:12px 8px; }
+  .grid > div { background:var(--glass); border:1px solid var(--line); border-radius:14px; padding:12px 8px; }
   .grid .l { font-size:11px; opacity:.65; letter-spacing:.1em; }
   .grid .v { font-family:"Russo One",sans-serif; font-size:22px; margin-top:4px; }
   .grid .wide { grid-column:span 3; }
@@ -195,6 +195,11 @@
   .errBox { max-width:520px; } .errBox ol { text-align:left; margin:10px auto 14px; padding-left:22px; line-height:1.8; }
   .errBox code { background:rgba(255,255,255,.1); padding:1px 6px; border-radius:4px; font-size:13px; }
   .errDetail { margin-top:14px; font:12px ui-monospace,Menlo,monospace; opacity:.45; word-break:break-all; }
+  .promo { display:flex; align-items:center; gap:12px; max-width:420px; margin:14px auto 0; padding:12px 14px; border-radius:14px; text-align:left;
+    text-decoration:none; color:#fff; background:linear-gradient(90deg, rgba(94,231,255,.16), rgba(94,231,255,.05)); border:1px solid rgba(94,231,255,.45); }
+  .promoTxt { flex:1; display:flex; flex-direction:column; gap:2px; font-size:12px; line-height:1.45; }
+  .promoTxt b { font-size:14px; } .promoTxt span { opacity:.8; }
+  .promoGo { flex:none; font-weight:900; font-size:13px; color:#0b0b14; background:var(--cyan); padding:8px 12px; border-radius:999px; white-space:nowrap; }
   #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; text-align:center; padding:24px; background:#0b0b14; z-index:9; }
 </style>
 </head>
@@ -261,8 +266,11 @@
     <div class="links">
       <button class="lbtn share" type="button" data-score="1">分享成績</button>
       <button class="lbtn" type="button" id="saveCard">存成績圖</button>
-      <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">Sectools.tw</a>
     </div>
+    <a class="promo" href="https://sectools.tw" target="_blank" rel="noopener">
+      <span class="promoTxt"><b>喜歡這個遊戲嗎？</b><span>Sectools.tw 還有更多免費實用小工具，免安裝、打開就能用</span></span>
+      <span class="promoGo">去逛逛 →</span>
+    </a>
     <div class="lb"><div class="l">本機排行榜 TOP 5</div><ol id="lbList"></ol></div>
   </div>
 </div>
@@ -283,6 +291,7 @@
       <li><b>NEAR MISS 擦身超車：</b>高速貼近其他車輛超過去會加分，越近越多（SUPER CLOSE），還會補充 BOOST 電量。</li>
       <li><b>COMBO 連擊：</b>連續做出特技會累積倍數，所有得分都乘上連擊數。撞到護欄會中斷連擊。</li>
       <li><b>跳台特技：</b>滯空時間、飛越車輛（JUMP OVER）和 BARREL ROLL 空中翻滾都有大量加分。</li>
+      <li><b>閃過三寶：</b>跑得越遠，路上越容易出現頭頂「三寶」標誌的車：龜速占用內線、突然切入、急煞、蛇行，甚至逆向衝過來！閃過三寶分數加倍，閃過逆向車更有大獎勵。</li>
       <li><b>BOOST 加速墊：</b>壓過路面上的藍色箭頭可以立刻補充電量並加速。</li>
     </ul>
     <h3>遊戲特色</h3>
@@ -291,6 +300,8 @@
       <li>智慧車流：轎車、休旅車、廂型車、聯結車會變換車道，難度隨距離提升。</li>
       <li>極速最高可達約 370 km/h，BOOST 時有速度線與藍色光軌。</li>
       <li>噴射推進器：冷氣推進讓跑車懸浮飛行，越過車陣拿 FLIGHT 加分。</li>
+      <li>台灣道路風格：國道與台 61 線西濱快速公路指標、限速與測速照相告示牌。</li>
+      <li>三寶機制：後段會出現切入、急煞、蛇行、龜速與逆向的三寶車，難度逐步升高。</li>
       <li>解鎖車色：最佳紀錄達標可解鎖烈焰紅、午夜黑、深海藍、香檳金、星際銀。</li>
       <li>本機排行榜、成績圖分享，邀請朋友一起挑戰。</li>
     </ul>
@@ -482,13 +493,45 @@ const smokeTex = canvasTex(128, 128, (g, w, h) => {
   gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.45, 'rgba(255,255,255,.45)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = gr; g.fillRect(0, 0, w, h);
 });
-function signTex(lines, color = '#0d6b3e') {
-  return canvasTex(512, 180, (g, w, h) => {
-    g.fillStyle = color; g.fillRect(0, 0, w, h);
-    g.strokeStyle = '#fff'; g.lineWidth = 6; g.strokeRect(8, 8, w - 16, h - 16);
-    g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.font = '900 58px "Noto Sans TC","PingFang TC",sans-serif'; g.fillText(lines[0], w / 2, 66, w - 40);
-    g.font = '700 38px "Noto Sans TC","PingFang TC",sans-serif'; g.fillText(lines[1], w / 2, 132, w - 40);
+// textures with text are redrawn once web fonts finish loading
+const fontRedraws = [];
+function textTex(w, h, draw) { const t = canvasTex(w, h, draw); fontRedraws.push({ t, draw }); return t; }
+Promise.all(['900 80px "Noto Sans TC"', '600 30px "Noto Sans TC"', '80px "Russo One"'].map(f => document.fonts.load(f).catch(() => {}))).then(() => {
+  for (const { t, draw } of fontRedraws) { const c = t.image, g = c.getContext('2d'); g.clearRect(0, 0, c.width, c.height); draw(g, c.width, c.height); t.needsUpdate = true; }
+});
+const ZH = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif';
+function drawPlum(g, cx, cy, r, num) { // provincial highway (台X線) plum-blossom marker
+  g.fillStyle = '#fff';
+  for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * Math.PI * 2 / 5; g.beginPath(); g.arc(cx + Math.cos(a) * r * 0.5, cy + Math.sin(a) * r * 0.5, r * 0.5, 0, Math.PI * 2); g.fill(); }
+  g.beginPath(); g.arc(cx, cy, r * 0.62, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#111'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = `900 ${Math.round(r * 0.34)}px ${ZH}`; g.fillText('台', cx, cy - r * 0.34);
+  g.font = `${Math.round(r * 0.66)}px "Russo One",sans-serif`; g.fillText(num, cx, cy + r * 0.16);
+}
+function drawShield(g, cx, cy, r, num) { // national freeway (國道) shield
+  const path = k => { g.beginPath(); g.moveTo(cx - r * 0.8 * k, cy - r * 0.86 * k); g.lineTo(cx + r * 0.8 * k, cy - r * 0.86 * k); g.lineTo(cx + r * 0.8 * k, cy + r * 0.05 * k);
+    g.quadraticCurveTo(cx + r * 0.8 * k, cy + r * 0.72 * k, cx, cy + r * k); g.quadraticCurveTo(cx - r * 0.8 * k, cy + r * 0.72 * k, cx - r * 0.8 * k, cy + r * 0.05 * k); g.closePath(); };
+  g.fillStyle = '#fff'; path(1); g.fill();
+  g.strokeStyle = '#00703c'; g.lineWidth = r * 0.07; path(0.86); g.stroke();
+  g.fillStyle = '#00703c'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = `900 ${Math.round(r * 0.3)}px ${ZH}`; g.fillText('國道', cx, cy - r * 0.48);
+  g.font = `${Math.round(r * 0.8)}px "Russo One",sans-serif`; g.fillText(num, cx, cy + r * 0.18);
+}
+function signTW({ color = '#00703c', badge, num, rows }) {
+  return textTex(1024, 358, (g, w, h) => {
+    g.fillStyle = color; g.beginPath(); g.roundRect(0, 0, w, h, 26); g.fill();
+    g.strokeStyle = '#fff'; g.lineWidth = 8; g.beginPath(); g.roundRect(14, 14, w - 28, h - 28, 18); g.stroke();
+    let x0 = 64;
+    if (badge === 'plum') { drawPlum(g, 156, h / 2, 108, num); x0 = 300; }
+    else if (badge === 'shield') { drawShield(g, 156, h / 2, 118, num); x0 = 300; }
+    const one = rows.length === 1, rowH = (h - 60) / rows.length;
+    rows.forEach(([zh, en, km], i) => {
+      const cy = 30 + rowH * (i + 0.5);
+      g.fillStyle = '#fff'; g.textBaseline = 'middle'; g.textAlign = 'left';
+      g.font = `900 ${one ? 100 : 80}px ${ZH}`; g.fillText(zh, x0, cy - (one ? 22 : 16), w - x0 - 210);
+      g.font = `600 ${one ? 38 : 30}px ${ZH}`; g.fillText(en, x0 + 4, cy + (one ? 52 : 38), w - x0 - 210);
+      g.textAlign = 'right'; g.font = `${one ? 104 : 84}px "Russo One",sans-serif`; g.fillText(km, w - 64, cy - 2);
+    });
   });
 }
 
@@ -599,9 +642,31 @@ const gantryPost = shared(new THREE.BoxGeometry(0.35, 7.6, 0.35).translate(0, 3.
 const gantryBeam = shared(new THREE.BoxGeometry(19.6, 0.5, 0.5).translate(0, 7.4, 0));
 const signGeo = shared(new THREE.PlaneGeometry(7, 2.45));
 const signMats = [
-  ['MARS 火星', '↑ 225,000,000 km'], ['SUPERCHARGER', '超級充電站 2 km'], ['LUDICROUS', '狂暴模式 → 左側車道'],
-  ['STARMAN 出口', 'EXIT 42 →'], ['0–100 km/h', '1.9 秒'], ['海岸大橋', 'OCEAN BRIDGE'],
-].map((l, i) => new THREE.MeshStandardMaterial({ map: signTex(l, i % 3 === 2 ? '#1f4fa8' : '#0d6b3e'), roughness: 0.5 }));
+  { badge: 'plum', num: '61', rows: [['八里', 'Bali', '5'], ['淡水', 'Tamsui', '12']] },
+  { badge: 'shield', num: '1', rows: [['台北', 'Taipei', '28'], ['桃園', 'Taoyuan', '41']] },
+  { badge: 'plum', num: '61', rows: [['林口', 'Linkou', '15'], ['觀音', 'Guanyin', '34']] },
+  { badge: 'shield', num: '3', rows: [['新竹', 'Hsinchu', '72'], ['苗栗', 'Miaoli', '96']] },
+  { color: '#1d4f9e', rows: [['西湖服務區', 'Xihu Service Area', '2']] },
+  { badge: 'plum', num: '61', rows: [['竹南', 'Zhunan', '63'], ['台中港', 'Taichung Port', '118']] },
+].map(spec => new THREE.MeshStandardMaterial({ map: signTW(spec), roughness: 0.5 }));
+// roadside: speed limit + speed camera warning
+const speedTex = textTex(256, 256, (g, w) => {
+  g.fillStyle = '#d81e25'; g.beginPath(); g.arc(w / 2, w / 2, w / 2 - 4, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#fff'; g.beginPath(); g.arc(w / 2, w / 2, w / 2 - 34, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#111'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = '96px "Russo One",sans-serif'; g.fillText('100', w / 2, w / 2 + 4);
+});
+const camTex = textTex(512, 256, (g, w, h) => {
+  g.fillStyle = '#fff'; g.beginPath(); g.roundRect(0, 0, w, h, 18); g.fill();
+  g.strokeStyle = '#111'; g.lineWidth = 10; g.beginPath(); g.roundRect(12, 12, w - 24, h - 24, 12); g.stroke();
+  g.fillStyle = '#111'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.font = `900 74px ${ZH}`; g.fillText('前有測速照相', w / 2, 104, w - 60);
+  g.font = `600 34px ${ZH}`; g.fillText('Speed Camera Ahead', w / 2, 184, w - 60);
+});
+const roadSignPole = shared(new THREE.BoxGeometry(0.1, 3.6, 0.1).translate(0, 1.8, 0));
+const speedSignGeo = shared(new THREE.PlaneGeometry(1.5, 1.5).translate(0, 3.4, 0.06));
+const camSignGeo = shared(new THREE.PlaneGeometry(2.4, 1.2).translate(0, 3.3, 0.06));
+const speedSignMat = new THREE.MeshStandardMaterial({ map: speedTex, transparent: true, alphaTest: 0.5, roughness: 0.5, side: THREE.DoubleSide });
+const camSignMat = new THREE.MeshStandardMaterial({ map: camTex, roughness: 0.5, side: THREE.DoubleSide });
 
 // ================= road chunks =================
 const CH = 120, VIEW_AHEAD = 1150;
@@ -643,6 +708,12 @@ function buildChunk(k) {
     const m2 = add(lampGeo, [M.pole, M.bulb], false, true);
     m2.position.copy(roadPoint(s + 20, -8.62, 0.95, tmp)); m2.rotation.y = yawAt(s + 20) + Math.PI;
     for (const pl of [3.5, -3.5]) { const p = add(pillarGeo, M.deck); p.position.copy(roadPoint(s + 10, pl, 0, tmp)); p.rotation.y = yawAt(s + 10); }
+  }
+  const k3 = ((k % 3) + 3) % 3;
+  if (k3 > 0) {
+    const s = s0 + 30, yaw = yawAt(s);
+    const pole = add(roadSignPole, M.pole, false, true); pole.position.copy(roadPoint(s, 8.62, 0.95, tmp)); pole.rotation.y = yaw;
+    const face = add(k3 === 1 ? speedSignGeo : camSignGeo, k3 === 1 ? speedSignMat : camSignMat); face.position.copy(pole.position); face.rotation.y = yaw;
   }
   if (((k % 5) + 5) % 5 === 3) {
     const s = s0 + 60, yaw = yawAt(s);
@@ -915,18 +986,67 @@ function laneBlocked(lane, s, range, self) {
   return false;
 }
 function rampInLane(lane, s0, s1) { return ramps.some(r => r.lane === lane && r.s > s0 && r.s < s1); }
+// ----- 三寶 (reckless drivers) -----
+const laneOf = x => clamp(Math.round(x / LANE_W + 1.5), 0, LANES - 1);
+const sbTagTex = textTex(256, 100, (g, w, h) => {
+  g.fillStyle = '#e0242c'; g.beginPath(); g.roundRect(4, 4, w - 8, h - 8, 22); g.fill();
+  g.strokeStyle = '#fff'; g.lineWidth = 6; g.beginPath(); g.roundRect(10, 10, w - 20, h - 20, 16); g.stroke();
+  g.fillStyle = '#fff'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.font = `900 60px ${ZH}`; g.fillText('三寶', w / 2, h / 2 + 3);
+});
+const sbTagMat = new THREE.SpriteMaterial({ map: sbTagTex, depthWrite: false });
+M.amber = new THREE.MeshStandardMaterial({ color: '#331a00', emissive: '#ffa31a', emissiveIntensity: 9 });
+M.brake = new THREE.MeshStandardMaterial({ color: '#300', emissive: '#ff1a2a', emissiveIntensity: 24 });
+const blinkGeo = shared(new THREE.BoxGeometry(0.24, 0.13, 0.06)), brakeGeo = shared(new THREE.BoxGeometry(0.52, 0.2, 0.06));
+const LOW_H = { sport: 0.55, suv: 0.95, van: 1.4, sedan: 0.72 };
+function addSanbaoParts(c) {
+  const T = TYPES[c.type], L = T.len, Wd = T.wid;
+  const ty = c.type === 'truck' ? 0.85 : 0.3 + LOW_H[c.type] / 2 + LOW_H[c.type] * 0.22;
+  c.blinkers = []; c.brakes = [];
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+    const b = new THREE.Mesh(blinkGeo, M.amber); b.position.set(sx * (Wd / 2 - 0.1), ty + 0.12, sz * (L / 2 + 0.04)); b.visible = false; c.mesh.add(b); c.blinkers.push(b);
+  }
+  for (const sx of [-1, 1]) { const b = new THREE.Mesh(brakeGeo, M.brake); b.position.set(sx * (Wd / 2 - 0.3), ty, L / 2 + 0.05); b.visible = false; c.mesh.add(b); c.brakes.push(b); }
+  c.tag = new THREE.Sprite(sbTagMat); c.tag.scale.set(2.0, 0.78, 1); c.tag.position.set(0, T.h + 1.0, 0); c.mesh.add(c.tag);
+  c.phase = Math.random() * 6.28;
+}
+function makeSanbao(c) {
+  const travelled = ps - startS;
+  if (state !== 'play' || travelled < 1500) return;
+  if (Math.random() > Math.min(0.24, 0.06 + (travelled - 1500) / 12000)) return;
+  const pool = ['slow', 'cut', 'cut'];
+  if (travelled > 2000) pool.push('brake', 'brake');
+  if (travelled > 3000) pool.push('weave', 'weave');
+  let kind = pick(pool);
+  if (kind === 'slow') {
+    if (c.lane !== 0 && laneBlocked(0, c.s, 18, c)) kind = 'cut';
+    else { c.lane = c.target = 0; c.lat = laneX(0); c.base = c.speed = rnd(12, 15); }
+  }
+  c.sb = kind; addSanbaoParts(c);
+}
+function spawnWrongWay(s) {
+  const lanes = [0, 1, 2, 3].filter(l => !laneBlocked(l, s, 70) && !rampInLane(l, s - 120, s + 20));
+  if (!lanes.length) return false;
+  const lane = pick(lanes), type = pick(['sedan', 'sedan', 'suv', 'sport']), T = TYPES[type];
+  const mesh = new THREE.Mesh(trafficGeos[type], [paint(pick(COLORS)), M.glass, M.tire, M.tail, M.head]);
+  mesh.castShadow = true; scene.add(mesh);
+  const sp = -rnd(20, 26);
+  const c = { s, lat: laneX(lane), lane, target: lane, speed: sp, base: sp, type, mesh, len: T.len, wid: T.wid, h: T.h, passed: false, crashed: false, latV: 0, q: new THREE.Quaternion(), w: new THREE.Vector3(), vs: 0, vy: 0, y: 0, sb: 'wrong' };
+  addSanbaoParts(c); traffic.push(c);
+  return true;
+}
 function spawnCar(s) {
   const lane = Math.floor(Math.random() * LANES);
   if (laneBlocked(lane, s, 16) || rampInLane(lane, s - 30, s + 90)) return false;
   let near = 0; for (const c of traffic) if (Math.abs(c.s - s) < 14) near++;
-  if (near >= LANES - 1) return false;
+  if (near >= (ps - startS < 2000 ? 2 : LANES - 1)) return false; // early on, always leave two lanes open
   const r = Math.random();
   const type = r < 0.42 ? 'sedan' : r < 0.64 ? 'suv' : r < 0.76 ? 'sport' : r < 0.88 ? 'van' : 'truck';
   const T = TYPES[type];
   const mesh = new THREE.Mesh(trafficGeos[type], [paint(type === 'truck' ? pick(['#e8e8e8', '#c43b2a', '#2b62c4']) : pick(COLORS)), M.glass, M.tire, M.tail, M.head]);
   mesh.castShadow = true; scene.add(mesh);
   const base = type === 'truck' ? rnd(20, 24) : rnd(23, 33);
-  traffic.push({ s, lat: laneX(lane), lane, target: lane, speed: base, base, type, mesh, len: T.len, wid: T.wid, h: T.h, passed: false, crashed: false, latV: 0, q: new THREE.Quaternion(), w: new THREE.Vector3(), vs: 0, vy: 0, y: 0 });
+  const car = { s, lat: laneX(lane), lane, target: lane, speed: base, base, type, mesh, len: T.len, wid: T.wid, h: T.h, passed: false, crashed: false, latV: 0, q: new THREE.Quaternion(), w: new THREE.Vector3(), vs: 0, vy: 0, y: 0, sb: null };
+  traffic.push(car); makeSanbao(car);
   return true;
 }
 function clearWorld() {
@@ -939,7 +1059,7 @@ function clearWorld() {
 // ================= state =================
 let state = 'loading';
 let ps = 0, lat = 0, latV = 0, y = 0, vy = 0, speed = 0, roll = 0, air = false, airTime = 0, onRamp = null;
-let jet = 100, jetting = false, flight = false, jetLock = false;
+let jet = 100, jetting = false, flight = false, jetLock = false, sbWarned = false, nextWrong = 0;
 let boost = 60, boosting = false, score = 0, combo = 0, comboT = 0, nearCount = 0, topSpeed = 0, startS = 0;
 let shake = 0, timeScale = 1, crashT = 0, crashReason = '', nextRamp = 0, nextPad = 0, scrapeT = 0, cdT = 0, menuT = 0;
 const crashPhys = { vs: 0, vlat: 0, vy: 0, w: new THREE.Vector3() };
@@ -951,12 +1071,12 @@ let camLat = 0, camY = 2.6;
 function resetRun() {
   clearWorld();
   ps = 0; lat = laneX(1); latV = 0; y = 0; vy = 0; speed = 0; roll = 0; air = false; airTime = 0; onRamp = null;
-  jet = 100; jetting = false; flight = false; jetLock = false;
+  jet = 100; jetting = false; flight = false; jetLock = false; sbWarned = false; nextWrong = 0;
   boost = 60; boosting = false; score = 0; combo = 0; comboT = 0; nearCount = 0; topSpeed = 0; startS = 0;
   shake = 0; timeScale = 1; crashT = 0; nextRamp = 520; nextPad = 300; scrapeT = 0;
   player.userData.chassis.rotation.set(0, 0, 0);
   trails.forEach(t => t.reset());
-  for (let s = 60; s < 900; s += rnd(20, 34)) spawnCar(s);
+  for (let s = 120; s < 900; s += rnd(70, 100)) spawnCar(s);
   camLat = lat; camY = 2.6;
 }
 
@@ -1036,6 +1156,7 @@ const sfx = {
   ramp: () => tone(300, 0, 0.35, 'sawtooth', 0.05, 900),
   pad: () => { tone(500, 0, 0.3, 'sawtooth', 0.05, 1600); noise(0.5, 1200, 0.25, 'bandpass', 4000); },
   boostOn: () => noise(0.6, 300, 0.3, 'bandpass', 3000),
+  horn: () => { tone(415, 0, 0.55, 'square', 0.05); tone(523, 0, 0.55, 'square', 0.04); tone(415, 0.62, 0.35, 'square', 0.05); tone(523, 0.62, 0.35, 'square', 0.04); },
   jetOn: () => { noise(0.5, 600, 0.35, 'bandpass', 6000); tone(180, 0, 0.4, 'sawtooth', 0.04, 520); },
   scrape: () => noise(0.18, 3500, 0.12, 'highpass'),
   beep: hi => tone(hi ? 1320 : 660, 0, hi ? 0.5 : 0.18, 'square', 0.06),
@@ -1112,7 +1233,7 @@ function updatePlay(dt) {
   boosting = keys.boost && boost > 0.5;
   if (boosting && !wasBoosting) sfx.boostOn();
   const travelled = ps - startS;
-  const maxV = 50 + Math.min(26, travelled / 420);
+  const maxV = 50 + Math.min(26, travelled / 580);
   const target = boosting ? maxV * 1.38 : maxV;
   if (keys.brake && !air) speed = Math.max(14, speed - 34 * dt);
   else if (speed < target) speed = Math.min(target, speed + (boosting ? 24 : speed < 30 ? 16 : 7) * dt);
@@ -1214,9 +1335,12 @@ function updatePlay(dt) {
       if (y > c.h) { bumpCombo(); addScore(400); popup('JUMP OVER!', `+${400 * combo}`, 'gold'); sfx.stunt(); }
       else if (gap < 1.1 && speed > c.speed + 4) {
         bumpCombo(); nearCount++; jet = Math.min(100, jet + 8);
-        const close = gap < 0.45, pts = close ? 250 : 100;
+        const close = gap < 0.45;
+        let pts = close ? 250 : 100, label = close ? 'SUPER CLOSE!' : 'NEAR MISS';
+        if (c.sb === 'wrong') { pts = close ? 900 : 500; label = '閃過逆向車！'; }
+        else if (c.sb) { pts *= 2; label = close ? '極限閃過三寶！' : '閃過三寶'; }
         addScore(pts); boost = Math.min(100, boost + (close ? 18 : 10));
-        popup(close ? 'SUPER CLOSE!' : 'NEAR MISS', `+${pts * combo}`, close ? 'gold' : '');
+        popup(label, `+${pts * combo}`, close || c.sb ? 'gold' : '');
         sfx.near(); shake = Math.max(shake, 0.15);
       }
     }
@@ -1236,10 +1360,15 @@ function updatePlay(dt) {
 
 function spawnStuff() {
   const travelled = ps - startS;
-  const want = Math.min(36, 18 + Math.floor(travelled / 600));
+  // difficulty ramps smoothly: ~8 cars at the start, ~17 at 2 km, ~22 at 4 km, approaching 28
+  const want = Math.round(8 + 20 * (1 - Math.exp(-travelled / 3500)));
   let tries = 0, alive = 0;
   for (const c of traffic) if (!c.crashed) alive++;
   while (alive < want && tries++ < 4) if (spawnCar(ps + rnd(420, 760))) alive++;
+  if (travelled > 4000) {
+    if (!nextWrong) nextWrong = ps + rnd(100, 400);
+    if (ps > nextWrong && spawnWrongWay(ps + rnd(480, 620))) nextWrong = ps + Math.max(600, rnd(1100, 1700) - (travelled - 4000) / 15);
+  }
   if (ps + 750 > nextRamp) { spawnRamp(nextRamp); nextRamp += rnd(420, 820); }
   if (ps + 750 > nextPad) { spawnPad(nextPad); nextPad += rnd(260, 520); }
   traffic = traffic.filter(c => { const keep = c.s > ps - 60 && c.s < ps + 1300; if (!keep) scene.remove(c.mesh); return keep; });
@@ -1256,11 +1385,16 @@ function updateTraffic(dt) {
       if (c.y < 0) { c.y = 0; c.vy = Math.abs(c.vy) > 2 ? -c.vy * 0.3 : 0; c.w.multiplyScalar(0.6); c.vs *= 0.7; }
       if (Math.abs(c.lat) > BARRIER - c.wid / 2) { c.lat = Math.sign(c.lat) * (BARRIER - c.wid / 2); c.latV *= -0.3; }
       c.q.multiply(_q.setFromEuler(_eul.set(c.w.x * dt, c.w.y * dt, c.w.z * dt)));
+    } else if (c.sb === 'wrong') {
+      // 逆向: drives against traffic in a fixed lane, hazards on, horn when close
+      c.s += c.speed * dt; c.latV = 0; c.blink = true;
+      if (!c.honked && state === 'play' && c.s > ps && c.s - ps < 80) { c.honked = true; sfx.horn(); popup('逆向車！', '快閃開', 'red'); }
     } else {
-      let ahead = null, gapA = 1e9;
+      let ahead = null, gapA = 1e9, wrongAhead = false;
       for (const o of traffic) {
         if (o === c) continue;
         const d = o.s - c.s;
+        if (o.sb === 'wrong') { if (d > 0 && d < 90 && Math.abs(o.lat - c.lat) < 2.4) wrongAhead = true; continue; }
         if (d > 0 && d < gapA && Math.abs(o.lat - c.lat) < 2.4) { gapA = d; ahead = o; }
       }
       // treat the player as a car too, so traffic behind never drives through you
@@ -1270,19 +1404,36 @@ function updateTraffic(dt) {
       }
       const clear = ahead ? gapA - (ahead.len + c.len) / 2 : 1e9;
       const rampAhead = rampInLane(c.target, c.s - 2, c.s + 70);
-      const wantChange = rampAhead || (ahead && clear < 22 && (ahead.crashed || ahead.speed < c.speed - 0.5));
+      const wantChange = rampAhead || wrongAhead || (!c.sb && ahead && clear < 22 && (ahead.crashed || ahead.speed < c.speed - 0.5));
       const nearPlayer = Math.abs(c.s - ps) < 28;
-      if (c.target === c.lane && (wantChange || Math.random() < 0.0015) && (!nearPlayer || rampAhead)) {
+      // 三寶 behaviours
+      let laneRate = 2.4;
+      c.blink = false;
+      if (c.sb && state === 'play') {
+        const d = c.s - ps, pl = laneOf(lat);
+        if (!sbWarned && d > 0 && d < 160) { sbWarned = true; popup('三寶出沒！', '小心切入、急煞、蛇行', 'red'); }
+        if (c.sb === 'cut' && !c.cutDone && d > 14 && d < 38 && speed > c.speed + 3 && Math.abs(pl - c.lane) === 1 && c.target === c.lane && y < 2) {
+          c.target = pl; c.cutDone = true; c.cutT = 1.3; popup('三寶切入！', '', 'red');
+        }
+        if (c.sb === 'brake' && !c.braked && d > 12 && d < 40 && Math.abs(lat - c.lat) < 1.8 && y < 2) {
+          c.braked = true; c.brakeT = 1.8; popup('三寶急煞！', '', 'red');
+        }
+      }
+      if (c.cutT > 0) { c.cutT -= dt; laneRate = 6.5; c.blink = true; }
+      if (!c.sb && c.target === c.lane && (wantChange || Math.random() < 0.0015) && (!nearPlayer || rampAhead)
+          || c.sb && c.sb !== 'weave' && c.target === c.lane && (rampAhead || wrongAhead)) {
         const opts = [c.lane - 1, c.lane + 1].filter(l => l >= 0 && l < LANES && !laneBlocked(l, c.s, 14, c) && !rampInLane(l, c.s - 10, c.s + 70));
         if (opts.length) c.target = pick(opts);
       }
-      let tSpeed = c.base;
+      let tSpeed = c.base, accel = 2.5;
       if (ahead && clear < 18) tSpeed = Math.min(tSpeed, ahead.crashed ? 0 : ahead.speed - 1);
-      c.speed = damp(c.speed, Math.max(0, tSpeed), 2.5, dt);
-      const tx = laneX(c.target), prev = c.lat;
-      c.lat += clamp(tx - c.lat, -2.4 * dt, 2.4 * dt);
+      if (c.brakeT > 0) { c.brakeT -= dt; tSpeed = 5; accel = 7; }
+      c.speed = damp(c.speed, Math.max(0, tSpeed), accel, dt);
+      const tx = c.sb === 'weave' ? laneX(c.lane) + Math.sin(elapsed * 1.5 + c.phase) * 2.1 : laneX(c.target), prev = c.lat;
+      if (c.sb === 'weave') laneRate = 3.2;
+      c.lat += clamp(tx - c.lat, -laneRate * dt, laneRate * dt);
       c.latV = dt > 0 ? (c.lat - prev) / dt : 0;
-      if (Math.abs(c.lat - tx) < 0.02) c.lane = c.target;
+      if (c.sb !== 'weave' && Math.abs(c.lat - tx) < 0.02) c.lane = c.target;
       c.s += c.speed * dt;
       // cars that cannot dodge a ramp simply ride it and catch some air
       let ry = -1;
@@ -1291,8 +1442,14 @@ function updateTraffic(dt) {
       else if (c.y > 0 || c.vy > 0) { c.vy -= 24 * dt; c.y = Math.max(0, c.y + c.vy * dt); if (c.y === 0) c.vy = 0; }
     }
     c.mesh.position.copy(roadPoint(c.s, c.lat, c.y));
-    const yaw = yawAt(c.s) - Math.atan2(c.latV, Math.max(5, c.speed)) * 0.9;
+    const yaw = c.sb === 'wrong' ? yawAt(c.s) + Math.PI : yawAt(c.s) - Math.atan2(c.latV, Math.max(5, c.speed)) * 0.9;
     c.mesh.quaternion.setFromEuler(_eul.set(0, yaw, 0)).multiply(c.q);
+    if (c.blinkers) {
+      const on = !c.crashed && c.blink && (elapsed * 3) % 1 < 0.5;
+      for (const b of c.blinkers) b.visible = on;
+      for (const b of c.brakes) b.visible = !c.crashed && c.brakeT > 0;
+      c.tag.visible = !c.crashed && c.s - ps > -8 && c.s - ps < 170;
+    }
   }
 }
 
@@ -1636,7 +1793,7 @@ frame();
 window.__rrBooted = true;
 window.__rr = { get state() { return state; }, get speed() { return speed; }, get score() { return score; }, keys,
   get lat() { return lat; }, set lat(v) { lat = v; }, get ps() { return ps; }, set ps(v) { ps = v; },
-  set autoPause(v) { autoPause = v; }, buildCard: () => buildCard(), snap: () => { composer.render(); return renderer.domElement.toDataURL('image/png'); }, get ramps() { return ramps; }, get y() { return y; }, get jet() { return jet; }, get traffic() { return traffic.length; }, renderer, bloom, scene, SU, hemi, sun, M };
+  set autoPause(v) { autoPause = v; }, buildCard: () => buildCard(), snap: () => { composer.render(); return renderer.domElement.toDataURL('image/png'); }, get ramps() { return ramps; }, get y() { return y; }, get jet() { return jet; }, get traffic() { return traffic.length; }, get cars() { return traffic; }, renderer, bloom, scene, SU, hemi, sun, M };
 </script>
 
 </body>
