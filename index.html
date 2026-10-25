@@ -180,6 +180,8 @@
   .lb li::before { content:"#" counter(r); width:30px; opacity:.6; }
   .lb li span:first-child { flex:1; }
   .lb li.me { color:var(--gold); opacity:1; }
+  .ibtn { display:inline-flex; align-items:center; justify-content:center; padding:0; }
+  .sw { display:inline-flex; align-items:center; justify-content:center; padding:0; }
   #qualBtn { font:700 11px "Russo One",sans-serif; letter-spacing:.05em; }
   @media (max-height:740px) { .grid .wide .v { font-size:30px; } h2 { font-size:42px; } .lb { margin-top:10px; } .grid { margin-bottom:16px; } }
   .aboutCard { position:relative; max-height:84vh; max-height:84dvh; overflow:auto; text-align:left; background:rgba(12,12,26,.88);
@@ -208,11 +210,11 @@
   <div id="pops"></div>
   <div id="topBtns">
     <button class="ibtn" id="qualBtn" title="畫質切換">HD</button>
-    <button class="ibtn" id="muteBtn" title="靜音 (M)">🔊</button>
-    <button class="ibtn" id="pauseBtn" title="暫停 (P)">❚❚</button>
+    <button class="ibtn" id="muteBtn" title="靜音 (M)" aria-label="靜音"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+    <button class="ibtn" id="pauseBtn" title="暫停 (P)" aria-label="暫停"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5v14"/><path d="M15 5v14"/></svg></button>
   </div>
-  <div id="jetBtn"><span class="ic">🚀</span><span class="t">JET</span><span class="k">↑ / W</span></div>
-  <div id="boostBtn"><span class="ic">⚡</span><span class="t">BOOST</span><span class="k">SPACE</span></div>
+  <div id="jetBtn"><span class="ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 11 6-6 6 6"/><path d="m6 18 6-6 6 6"/></svg></span><span class="t">JET</span><span class="k">↑ / W</span></div>
+  <div id="boostBtn"><span class="ic"><svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span><span class="t">BOOST</span><span class="k">SPACE</span></div>
   <div id="speedBox"><div id="speed" class="num">0</div><div class="unit num">KM/H</div></div>
 </div>
 <div id="countdown"></div>
@@ -223,16 +225,16 @@
     <h1 class="title">ROADSTER<br><b>RUSH</b><span class="zh">極速電能狂飆</span></h1>
   </div>
   <div class="card">
-    <div class="help kb"><span><kbd>←</kbd><kbd>→</kbd>變換車道</span><span><kbd>↑</kbd>🚀 噴射飛行</span><span><kbd>Space</kbd>BOOST</span><span><kbd>↓</kbd>煞車</span><span>空中按 <kbd>←</kbd><kbd>→</kbd> 翻滾</span></div>
-    <div class="help tc"><span>按住螢幕左/右半邊轉向</span><span>🚀 按鈕噴射飛行</span><span>⚡ 按鈕 BOOST</span><span>空中轉向可翻滾</span></div>
+    <div class="help kb"><span><kbd>←</kbd><kbd>→</kbd>變換車道</span><span><kbd>↑</kbd>噴射飛行</span><span><kbd>Space</kbd>BOOST</span><span><kbd>↓</kbd>煞車</span><span>空中按 <kbd>←</kbd><kbd>→</kbd> 翻滾</span></div>
+    <div class="help tc"><span>按住螢幕左/右半邊轉向</span><span>JET 按鈕噴射飛行</span><span>BOOST 按鈕加速</span><span>空中轉向可翻滾</span></div>
     <div class="paints" id="paints"></div>
     <div class="paintName" id="paintName"></div>
     <button class="btn" id="startBtn" disabled>載入中…</button>
     <div class="best" id="bestTxt"></div>
     <div class="links">
-      <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">🛡️ 更多工具 Sectools.tw</a>
-      <button class="lbtn share" type="button">📤 分享遊戲</button>
-      <button class="lbtn" type="button" id="aboutBtn">📖 遊戲介紹</button>
+      <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">更多工具 Sectools.tw</a>
+      <button class="lbtn share" type="button">分享遊戲</button>
+      <button class="lbtn" type="button" id="aboutBtn">遊戲介紹</button>
     </div>
     <div class="fine">非官方粉絲作品 · 擦身超車、飛躍跳台、空中翻滾都能加分</div>
   </div>
@@ -257,23 +259,23 @@
     <button class="btn" id="againBtn">再來一次</button>
     <div class="best" id="rBest"></div>
     <div class="links">
-      <button class="lbtn share" type="button" data-score="1">📤 分享成績</button>
-      <button class="lbtn" type="button" id="saveCard">🖼️ 存成績圖</button>
-      <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">🛡️ Sectools.tw</a>
+      <button class="lbtn share" type="button" data-score="1">分享成績</button>
+      <button class="lbtn" type="button" id="saveCard">存成績圖</button>
+      <a class="lbtn st" href="https://sectools.tw" target="_blank" rel="noopener">Sectools.tw</a>
     </div>
     <div class="lb"><div class="l">本機排行榜 TOP 5</div><ol id="lbList"></ol></div>
   </div>
 </div>
 <div class="screen center hidden" id="about" role="dialog" aria-labelledby="aboutTitle">
   <article class="card aboutCard">
-    <button class="ibtn closeAbout" id="aboutClose" aria-label="關閉">✕</button>
+    <button class="ibtn closeAbout" id="aboutClose" aria-label="關閉"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg></button>
     <h2 id="aboutTitle">Roadster Rush 遊戲介紹</h2>
     <p><strong>Roadster Rush 極速電能狂飆</strong>是一款免費的 3D 網頁賽車遊戲。你將駕駛一台白色電動超跑（Tesla Roadster 風格），在夕陽下的海岸大橋上高速奔馳，閃避車流、擦身超車、飛躍跳台，挑戰最高分。不需要下載 App，手機和電腦的瀏覽器打開就能玩。</p>
     <h3>怎麼玩</h3>
     <ul>
       <li><b>電腦：</b>← → 方向鍵（或 A / D）變換車道，空白鍵或 Shift 啟動 BOOST，↑ / W 啟動噴射推進器，↓ 煞車，P 暫停，M 靜音。</li>
-      <li><b>手機：</b>按住螢幕左半邊或右半邊轉向，左下角 ⚡ 按鈕啟動 BOOST、🚀 按鈕啟動噴射推進器，車子會自動加速。</li>
-      <li><b>🚀 噴射推進器：</b>致敬 Roadster 傳說中的 SpaceX 套件！按住就能讓車子離地飛起來，飛越整排車流，空中可左右平移。燃料用完會落地，在地面時會自動回充，擦身超車也能補充燃料。</li>
+      <li><b>手機：</b>按住螢幕左半邊或右半邊轉向，左下角 BOOST 按鈕加速、JET 按鈕啟動噴射推進器，車子會自動加速。</li>
+      <li><b>噴射推進器：</b>致敬 Roadster 傳說中的 SpaceX 套件！按住就能讓車子離地飛起來，飛越整排車流，空中可左右平移。燃料用完會落地，在地面時會自動回充，擦身超車也能補充燃料。</li>
       <li><b>空中：</b>衝上橘色跳台飛起來後，按左右可以做出空中翻滾，落地時要把車身轉正。</li>
     </ul>
     <h3>得分技巧</h3>
@@ -1057,7 +1059,8 @@ function pause(on) {
   state = on ? 'pause' : 'play'; show('pauseScreen', on);
   for (const k in keys) keys[k] = false;
 }
-function setMute(m) { muted = m; $('muteBtn').textContent = m ? '🔇' : '🔊'; try { localStorage.setItem('roadster-rush-mute', m ? '1' : '0'); } catch (e) {} }
+const SPK_ON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>', SPK_OFF = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6"/><path d="m21 9-5 6"/></svg>';
+function setMute(m) { muted = m; $('muteBtn').innerHTML = m ? SPK_OFF : SPK_ON; try { localStorage.setItem('roadster-rush-mute', m ? '1' : '0'); } catch (e) {} }
 setMute(muted);
 function updateBestTxt() { $('bestTxt').textContent = best ? `最佳紀錄 ${best.toLocaleString()}` : ''; }
 updateBestTxt();
@@ -1083,7 +1086,7 @@ function gameOver() {
   if (isBest) { best = s; try { localStorage.setItem('roadster-rush-best', String(best)); } catch (e) {} }
   const unlocked = PAINTS.filter(p => p.need > prevBest && p.need <= best);
   $('unlockMsg').hidden = !unlocked.length;
-  if (unlocked.length) $('unlockMsg').textContent = '🎨 解鎖新車色：' + unlocked.map(p => p.name).join('、') + '！';
+  if (unlocked.length) $('unlockMsg').textContent = '解鎖新車色：' + unlocked.map(p => p.name).join('、') + '！';
   recordRun(s);
   renderPaints();
   lastRun = { score: s, dist: (ps - startS) / 1000, top: Math.round(topSpeed * 3.6), near: nearCount };
@@ -1196,7 +1199,7 @@ function updatePlay(dt) {
   // boost pads
   for (const p of pads) {
     if (!p.used && !air && ps > p.s && ps < p.s + 7 && Math.abs(lat - p.lat) < 2.2) {
-      p.used = true; boost = Math.min(100, boost + 35); speed += 9; sfx.pad(); popup('BOOST PAD', '+35% ⚡', 'cyan'); shake = 0.4; flash(0.12);
+      p.used = true; boost = Math.min(100, boost + 35); speed += 9; sfx.pad(); popup('BOOST PAD', '+35%', 'cyan'); shake = 0.4; flash(0.12);
     }
   }
 
@@ -1525,7 +1528,7 @@ function renderPaints() {
   PAINTS.forEach((p, i) => {
     const locked = p.need > best, b = document.createElement('button');
     b.className = 'sw' + (i === paintIdx ? ' on' : '') + (locked ? ' locked' : '');
-    b.style.background = p.c; b.textContent = locked ? '🔒' : '';
+    b.style.background = p.c; b.innerHTML = locked ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>' : '';
     b.title = locked ? `${p.name}：最佳紀錄 ${p.need.toLocaleString()} 分解鎖` : p.name;
     b.setAttribute('aria-label', b.title);
     b.onclick = () => {
@@ -1581,7 +1584,7 @@ async function buildCard() {
     g.font = '700 26px "Noto Sans TC", sans-serif'; g.fillStyle = 'rgba(255,255,255,.7)'; g.fillText(l, x, 1172);
   });
   g.fillStyle = 'rgba(255,255,255,.12)'; g.fillRect(90, 1215, W - 180, 2);
-  g.font = '700 32px "Noto Sans TC", sans-serif'; g.fillStyle = '#fff'; g.fillText('你能超越嗎？👉 tesla-roadster.sectools.tw', W / 2, 1278);
+  g.font = '700 32px "Noto Sans TC", sans-serif'; g.fillStyle = '#fff'; g.fillText('你能超越嗎？ tesla-roadster.sectools.tw', W / 2, 1278);
   g.font = '600 22px "Noto Sans TC", sans-serif'; g.fillStyle = 'rgba(255,255,255,.5)'; g.fillText('更多免費工具 · Sectools.tw', W / 2, 1318);
   cardBlob = await new Promise(res => c.toBlob(res, 'image/png'));
   return cardBlob;
