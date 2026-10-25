@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>Roadster Rush 極速電能狂飆｜免費 3D 電動跑車網頁賽車遊戲</title>
-<meta name="description" content="免費 3D 網頁賽車遊戲！駕駛 Tesla Roadster 風格的電動超跑在夕陽海岸大橋上狂飆，閃避車流、擦身超車、飛躍跳台、空中翻滾。免下載、手機電腦瀏覽器直接玩。">
+<meta name="description" content="免費 3D 網頁賽車遊戲！駕駛 Tesla Roadster 風格的電動超跑在夕陽海岸大橋上狂飆，啟動噴射推進器飛越車流、擦身超車、飛躍跳台、空中翻滾。免下載、手機電腦瀏覽器直接玩。">
 <meta name="keywords" content="Roadster 遊戲,Tesla Roadster 遊戲,特斯拉遊戲,賽車遊戲,網頁遊戲,免費線上遊戲,3D 賽車,手機遊戲,電動車遊戲,跑酷賽車,Roadster Rush">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="author" content="Sectools.tw">
@@ -101,6 +101,17 @@
   #boostBtn .k { font-size:10px; opacity:.55; margin-top:2px; letter-spacing:.1em; }
   #boostBtn.active { box-shadow:0 0 34px 6px rgba(94,231,255,.55); }
   #boostBtn.empty .ic { color:#777; }
+  #jetBtn { position:absolute; left:34px; bottom:calc(140px + env(safe-area-inset-bottom)); width:80px; height:80px; border-radius:50%;
+    pointer-events:auto; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-direction:column;
+    background:conic-gradient(#ffb15e calc(var(--j,100)*1%), rgba(255,255,255,.14) 0); transition:box-shadow .2s; }
+  #jetBtn::before { content:""; position:absolute; inset:5px; border-radius:50%; background:rgba(8,14,30,.72); backdrop-filter:blur(6px); }
+  #jetBtn > * { position:relative; }
+  #jetBtn .ic { font-size:24px; line-height:1; }
+  #jetBtn .t { font-family:"Russo One",sans-serif; font-size:10px; letter-spacing:.1em; margin-top:2px; }
+  #jetBtn .k { font-size:9px; opacity:.55; margin-top:1px; }
+  #jetBtn.active { box-shadow:0 0 30px 6px rgba(255,177,94,.55); }
+  #jetBtn.empty { filter:grayscale(1) brightness(.7); }
+  body.touch #jetBtn .k { display:none; }
   body.touch #boostBtn .k { display:none; }
 
   #pops { position:absolute; left:0; right:0; top:28%; display:flex; flex-direction:column; align-items:center; gap:6px; }
@@ -200,6 +211,7 @@
     <button class="ibtn" id="muteBtn" title="靜音 (M)">🔊</button>
     <button class="ibtn" id="pauseBtn" title="暫停 (P)">❚❚</button>
   </div>
+  <div id="jetBtn"><span class="ic">🚀</span><span class="t">JET</span><span class="k">↑ / W</span></div>
   <div id="boostBtn"><span class="ic">⚡</span><span class="t">BOOST</span><span class="k">SPACE</span></div>
   <div id="speedBox"><div id="speed" class="num">0</div><div class="unit num">KM/H</div></div>
 </div>
@@ -211,8 +223,8 @@
     <h1 class="title">ROADSTER<br><b>RUSH</b><span class="zh">極速電能狂飆</span></h1>
   </div>
   <div class="card">
-    <div class="help kb"><span><kbd>←</kbd><kbd>→</kbd>變換車道</span><span><kbd>Space</kbd>BOOST</span><span><kbd>↓</kbd>煞車</span><span>空中按 <kbd>←</kbd><kbd>→</kbd> 翻滾</span></div>
-    <div class="help tc"><span>按住螢幕左/右半邊轉向</span><span>⚡ 按鈕 BOOST</span><span>空中轉向可翻滾</span></div>
+    <div class="help kb"><span><kbd>←</kbd><kbd>→</kbd>變換車道</span><span><kbd>↑</kbd>🚀 噴射飛行</span><span><kbd>Space</kbd>BOOST</span><span><kbd>↓</kbd>煞車</span><span>空中按 <kbd>←</kbd><kbd>→</kbd> 翻滾</span></div>
+    <div class="help tc"><span>按住螢幕左/右半邊轉向</span><span>🚀 按鈕噴射飛行</span><span>⚡ 按鈕 BOOST</span><span>空中轉向可翻滾</span></div>
     <div class="paints" id="paints"></div>
     <div class="paintName" id="paintName"></div>
     <button class="btn" id="startBtn" disabled>載入中…</button>
@@ -259,8 +271,9 @@
     <p><strong>Roadster Rush 極速電能狂飆</strong>是一款免費的 3D 網頁賽車遊戲。你將駕駛一台白色電動超跑（Tesla Roadster 風格），在夕陽下的海岸大橋上高速奔馳，閃避車流、擦身超車、飛躍跳台，挑戰最高分。不需要下載 App，手機和電腦的瀏覽器打開就能玩。</p>
     <h3>怎麼玩</h3>
     <ul>
-      <li><b>電腦：</b>← → 方向鍵（或 A / D）變換車道，空白鍵或 ↑ 啟動 BOOST，↓ 煞車，P 暫停，M 靜音。</li>
-      <li><b>手機：</b>按住螢幕左半邊或右半邊轉向，左下角 ⚡ 按鈕啟動 BOOST，車子會自動加速。</li>
+      <li><b>電腦：</b>← → 方向鍵（或 A / D）變換車道，空白鍵或 Shift 啟動 BOOST，↑ / W 啟動噴射推進器，↓ 煞車，P 暫停，M 靜音。</li>
+      <li><b>手機：</b>按住螢幕左半邊或右半邊轉向，左下角 ⚡ 按鈕啟動 BOOST、🚀 按鈕啟動噴射推進器，車子會自動加速。</li>
+      <li><b>🚀 噴射推進器：</b>致敬 Roadster 傳說中的 SpaceX 套件！按住就能讓車子離地飛起來，飛越整排車流，空中可左右平移。燃料用完會落地，在地面時會自動回充，擦身超車也能補充燃料。</li>
       <li><b>空中：</b>衝上橘色跳台飛起來後，按左右可以做出空中翻滾，落地時要把車身轉正。</li>
     </ul>
     <h3>得分技巧</h3>
@@ -275,6 +288,7 @@
       <li>真實 3D 畫面：夕陽天空、海面反射、棕櫚樹海岸、城市天際線與光暈特效。</li>
       <li>智慧車流：轎車、休旅車、廂型車、聯結車會變換車道，難度隨距離提升。</li>
       <li>極速最高可達約 370 km/h，BOOST 時有速度線與藍色光軌。</li>
+      <li>噴射推進器：冷氣推進讓跑車懸浮飛行，越過車陣拿 FLIGHT 加分。</li>
       <li>解鎖車色：最佳紀錄達標可解鎖烈焰紅、午夜黑、深海藍、香檳金、星際銀。</li>
       <li>本機排行榜、成績圖分享，邀請朋友一起挑戰。</li>
     </ul>
@@ -863,6 +877,8 @@ const speedLines = new THREE.LineSegments(slGeo, slMat); speedLines.frustumCulle
 
 // ================= game objects =================
 const player = buildRoadster(); scene.add(player);
+const jetGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: smokeTex, color: new THREE.Color(1.6, 2.4, 3.0), transparent: true, opacity: 0, blending: THREE.AdditiveBlending, depthWrite: false }));
+jetGlow.scale.set(3.6, 3.6, 1); jetGlow.position.y = 0.05; jetGlow.visible = false; player.add(jetGlow);
 const PL = 4.45, PW = 2.0;
 let traffic = [], ramps = [], pads = [];
 const RAMP_L = 9, RAMP_H = 1.7, RAMP_W = 3.3;
@@ -921,17 +937,19 @@ function clearWorld() {
 // ================= state =================
 let state = 'loading';
 let ps = 0, lat = 0, latV = 0, y = 0, vy = 0, speed = 0, roll = 0, air = false, airTime = 0, onRamp = null;
+let jet = 100, jetting = false, flight = false, jetLock = false;
 let boost = 60, boosting = false, score = 0, combo = 0, comboT = 0, nearCount = 0, topSpeed = 0, startS = 0;
 let shake = 0, timeScale = 1, crashT = 0, crashReason = '', nextRamp = 0, nextPad = 0, scrapeT = 0, cdT = 0, menuT = 0;
 const crashPhys = { vs: 0, vlat: 0, vy: 0, w: new THREE.Vector3() };
 let best = 0; try { best = +localStorage.getItem('roadster-rush-best') || 0; } catch (e) {}
-const keys = { left: false, right: false, brake: false, boost: false };
+const keys = { left: false, right: false, brake: false, boost: false, jet: false };
 const camLook = new THREE.Vector3();
 let camLat = 0, camY = 2.6;
 
 function resetRun() {
   clearWorld();
   ps = 0; lat = laneX(1); latV = 0; y = 0; vy = 0; speed = 0; roll = 0; air = false; airTime = 0; onRamp = null;
+  jet = 100; jetting = false; flight = false; jetLock = false;
   boost = 60; boosting = false; score = 0; combo = 0; comboT = 0; nearCount = 0; topSpeed = 0; startS = 0;
   shake = 0; timeScale = 1; crashT = 0; nextRamp = 520; nextPad = 300; scrapeT = 0;
   player.userData.chassis.rotation.set(0, 0, 0);
@@ -941,7 +959,7 @@ function resetRun() {
 }
 
 // ================= HUD / popups =================
-const hud = { score: $('score'), dist: $('dist'), speed: $('speed'), combo: $('combo'), boost: $('boostBtn') };
+const hud = { jet: $('jetBtn'), score: $('score'), dist: $('dist'), speed: $('speed'), combo: $('combo'), boost: $('boostBtn') };
 function popup(text, sub, cls = '') {
   const el = document.createElement('div'); el.className = 'pop ' + cls;
   el.innerHTML = text + (sub ? `<small>${sub}</small>` : '');
@@ -961,10 +979,13 @@ function updateHUD() {
   hud.boost.style.setProperty('--b', boost.toFixed(1));
   hud.boost.classList.toggle('active', boosting);
   hud.boost.classList.toggle('empty', boost < 1);
+  hud.jet.style.setProperty('--j', jet.toFixed(1));
+  hud.jet.classList.toggle('active', jetting);
+  hud.jet.classList.toggle('empty', jet < 1);
 }
 
 // ================= audio =================
-let AC = null, oscA, oscB, motorG, windG, noiseBuf, muted = false;
+let AC = null, oscA, oscB, motorG, windG, jetG, noiseBuf, muted = false;
 try { muted = localStorage.getItem('roadster-rush-mute') === '1'; } catch (e) {}
 function initAudio() {
   if (AC) { AC.resume && AC.resume(); return; }
@@ -979,6 +1000,8 @@ function initAudio() {
     const wn = AC.createBufferSource(); wn.buffer = noiseBuf; wn.loop = true;
     const bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 700; bp.Q.value = 0.6;
     windG = AC.createGain(); windG.gain.value = 0; wn.connect(bp); bp.connect(windG); windG.connect(AC.destination); wn.start();
+    const hp = AC.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2500;
+    jetG = AC.createGain(); jetG.gain.value = 0; wn.connect(hp); hp.connect(jetG); jetG.connect(AC.destination);
   } catch (e) { AC = null; }
 }
 function updateAudio() {
@@ -988,6 +1011,7 @@ function updateAudio() {
   oscB.frequency.setTargetAtTime(160 + p * 900 * (boosting ? 1.3 : 1), t, 0.05);
   motorG.gain.setTargetAtTime(live ? 0.012 + p * 0.03 : 0, t, 0.1);
   windG.gain.setTargetAtTime(live ? p * p * 0.07 + (boosting ? 0.05 : 0) : 0, t, 0.15);
+  jetG.gain.setTargetAtTime(live && jetting ? 0.13 : 0, t, 0.06);
 }
 function noise(dur, freq, vol, type = 'bandpass', sweep) {
   if (!AC || muted) return;
@@ -1010,6 +1034,7 @@ const sfx = {
   ramp: () => tone(300, 0, 0.35, 'sawtooth', 0.05, 900),
   pad: () => { tone(500, 0, 0.3, 'sawtooth', 0.05, 1600); noise(0.5, 1200, 0.25, 'bandpass', 4000); },
   boostOn: () => noise(0.6, 300, 0.3, 'bandpass', 3000),
+  jetOn: () => { noise(0.5, 600, 0.35, 'bandpass', 6000); tone(180, 0, 0.4, 'sawtooth', 0.04, 520); },
   scrape: () => noise(0.18, 3500, 0.12, 'highpass'),
   beep: hi => tone(hi ? 1320 : 660, 0, hi ? 0.5 : 0.18, 'square', 0.06),
   stunt: () => { tone(880, 0, .1, 'square', .04); tone(1175, .08, .1, 'square', .04); tone(1568, .16, .25, 'square', .04); },
@@ -1090,12 +1115,19 @@ function updatePlay(dt) {
   else if (speed < target) speed = Math.min(target, speed + (boosting ? 24 : speed < 30 ? 16 : 7) * dt);
   else speed = Math.max(target, speed - 9 * dt);
   boost = boosting ? Math.max(0, boost - 26 * dt) : Math.min(100, boost + 1.2 * dt);
+  // SpaceX-style cold-gas thrusters: hold to lift off and hover
+  const wasJetting = jetting;
+  if (jet <= 0.5) jetLock = true; else if (jet >= 15) jetLock = false; // must recharge a bit after running dry
+  jetting = keys.jet && !jetLock && !onRamp;
+  if (jetting) { jet = Math.max(0, jet - 28 * dt); if (!wasJetting) sfx.jetOn(); }
+  else if (!air) jet = Math.min(100, jet + 9 * dt);
   topSpeed = Math.max(topSpeed, speed);
 
   const prevS = ps;
   ps += speed * dt;
 
   if (!air) latV = damp(latV, steerIn * (7.5 + speed * 0.065), steerIn ? 7 : 9, dt);
+  else if (jetting) latV = damp(latV, steerIn * 9, 4, dt); // thrust vectoring while hovering
   lat += latV * dt;
 
   // ramps
@@ -1114,9 +1146,24 @@ function updatePlay(dt) {
   }
   onRamp = onAny;
 
+  if (jetting && !air && !onRamp) {
+    air = true; vy = Math.max(vy, 6); airTime = 0; roll = 0; flight = true; shake = 0.5;
+    popup('THRUSTERS!', '噴射推進器啟動', 'cyan');
+    for (let i = 0; i < 18; i++) { const a = Math.random() * Math.PI * 2; emit(roadPoint(ps, lat, 0.2, tmpV), { vel: new THREE.Vector3(Math.cos(a) * rnd(6, 12), rnd(0.2, 1), Math.sin(a) * rnd(6, 12)), life: rnd(0.6, 1.1), size: 1, grow: 4.5, color: '#e9e4de', opacity: 0.45 }); }
+  }
+  if (jetting && air) flight = true;
+
   if (air) {
-    vy -= 24 * dt; y += vy * dt; airTime += dt;
-    roll += steerIn * 7.2 * dt;
+    if (jetting) {
+      const thrust = y < 4.5 ? 44 : 24 + (6.5 - y) * 10;
+      vy += (thrust - 24) * dt; vy *= Math.exp(-1.6 * dt); vy = Math.min(vy, 8);
+      roll = damp(roll, 0, 4, dt);
+    } else {
+      vy -= 24 * dt;
+      roll += steerIn * 7.2 * dt;
+    }
+    y += vy * dt; airTime += dt;
+    lat = clamp(lat, -(BARRIER + 3), BARRIER + 3);
     if (y <= 0) {
       y = 0; air = false;
       const r = wrapPi(roll), flips = Math.round(Math.abs(roll) / (Math.PI * 2));
@@ -1128,8 +1175,9 @@ function updatePlay(dt) {
         const pts = Math.round(airTime * 350) + flips * 1500;
         bumpCombo(); addScore(pts); boost = Math.min(100, boost + 15 + flips * 15);
         if (flips) { popup(flips > 1 ? `BARREL ROLL ×${flips}` : 'BARREL ROLL!', `+${pts * Math.max(1, combo)}`, 'gold big'); sfx.stunt(); }
-        else popup(`AIR ${airTime.toFixed(1)}s`, `+${pts * Math.max(1, combo)}`, 'cyan');
+        else popup(`${flight ? 'FLIGHT' : 'AIR'} ${airTime.toFixed(1)}s`, `+${pts * Math.max(1, combo)}`, 'cyan');
       }
+      flight = false;
     }
   } else {
     roll = damp(roll, 0, 10, dt);
@@ -1162,7 +1210,7 @@ function updatePlay(dt) {
       const gap = dl - (PW + c.wid) / 2;
       if (y > c.h) { bumpCombo(); addScore(400); popup('JUMP OVER!', `+${400 * combo}`, 'gold'); sfx.stunt(); }
       else if (gap < 1.1 && speed > c.speed + 4) {
-        bumpCombo(); nearCount++;
+        bumpCombo(); nearCount++; jet = Math.min(100, jet + 8);
         const close = gap < 0.45, pts = close ? 250 : 100;
         addScore(pts); boost = Math.min(100, boost + (close ? 18 : 10));
         popup(close ? 'SUPER CLOSE!' : 'NEAR MISS', `+${pts * combo}`, close ? 'gold' : '');
@@ -1277,6 +1325,15 @@ function placePlayer(dt) {
   }
   const { wheels, shadow } = player.userData;
   for (const w of wheels) { w.spin.rotation.x -= speed * dt / 0.36; if (w.front) w.steer.rotation.y = damp(w.steer.rotation.y, -latV * 0.025, 10, dt); }
+  jetGlow.material.opacity = damp(jetGlow.material.opacity, jetting && state === 'play' ? 0.9 : 0, 12, dt);
+  jetGlow.visible = jetGlow.material.opacity > 0.01;
+  if (jetting && state === 'play') {
+    basis(ps);
+    for (const [dz, dx] of [[-1.25, -0.7], [-1.25, 0.7], [1.25, -0.7], [1.25, 0.7]]) {
+      emit(roadPoint(ps - dz, lat + dx, y + 0.3, tmpV), { vel: new THREE.Vector3(_fw.x * speed * 0.7 + rnd(-0.6, 0.6), -rnd(11, 16), _fw.z * speed * 0.7 + rnd(-0.6, 0.6)), life: rnd(0.18, 0.32), size: 0.3, grow: 1.6, color: pick(['#ffffff', '#dff4ff', '#bfe9ff']), add: true, opacity: 0.85, drag: 3 });
+    }
+    if (y < 5 && Math.random() < 0.8) { const a = Math.random() * Math.PI * 2; emit(roadPoint(ps, lat + rnd(-1, 1), 0.25, tmpV), { vel: new THREE.Vector3(Math.cos(a) * rnd(3, 7) + _fw.x * speed * 0.5, rnd(0.3, 1.2), Math.sin(a) * rnd(3, 7) + _fw.z * speed * 0.5), life: rnd(0.5, 0.9), size: 0.8, grow: 3.5, color: '#e6e1db', opacity: 0.3 * (1 - y / 5) }); }
+  }
   shadow.position.y = -y + 0.03; shadow.material.opacity = 0.55 * Math.max(0, 1 - y / 6);
   M.tail.emissiveIntensity = keys.brake ? 16 : 7;
 }
@@ -1397,7 +1454,7 @@ addEventListener('resize', resize);
 
 // ================= input =================
 const KEYMAP = { ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', ArrowDown: 'brake', KeyS: 'brake',
-  Space: 'boost', ShiftLeft: 'boost', ShiftRight: 'boost', ArrowUp: 'boost', KeyW: 'boost' };
+  Space: 'boost', ShiftLeft: 'boost', ShiftRight: 'boost', ArrowUp: 'jet', KeyW: 'jet', KeyJ: 'jet' };
 addEventListener('keydown', e => {
   const k = KEYMAP[e.code];
   if (k) { keys[k] = true; e.preventDefault(); }
@@ -1430,6 +1487,10 @@ const bb = $('boostBtn');
 bb.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); keys.boost = true; bb.setPointerCapture(e.pointerId); });
 const bOff = () => { keys.boost = false; };
 bb.addEventListener('pointerup', bOff); bb.addEventListener('pointercancel', bOff); bb.addEventListener('lostpointercapture', bOff);
+const jb = $('jetBtn');
+jb.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); keys.jet = true; jb.setPointerCapture(e.pointerId); });
+const jOff = () => { keys.jet = false; };
+jb.addEventListener('pointerup', jOff); jb.addEventListener('pointercancel', jOff); jb.addEventListener('lostpointercapture', jOff);
 
 // ----- quality -----
 let quality = 'high', qualPref = null;
@@ -1572,7 +1633,7 @@ frame();
 window.__rrBooted = true;
 window.__rr = { get state() { return state; }, get speed() { return speed; }, get score() { return score; }, keys,
   get lat() { return lat; }, set lat(v) { lat = v; }, get ps() { return ps; }, set ps(v) { ps = v; },
-  set autoPause(v) { autoPause = v; }, buildCard: () => buildCard(), snap: () => { composer.render(); return renderer.domElement.toDataURL('image/png'); }, get ramps() { return ramps; }, get traffic() { return traffic.length; }, renderer, bloom, scene, SU, hemi, sun, M };
+  set autoPause(v) { autoPause = v; }, buildCard: () => buildCard(), snap: () => { composer.render(); return renderer.domElement.toDataURL('image/png'); }, get ramps() { return ramps; }, get y() { return y; }, get jet() { return jet; }, get traffic() { return traffic.length; }, renderer, bloom, scene, SU, hemi, sun, M };
 </script>
 
 </body>
