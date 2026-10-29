@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<!--SEO:START-->
 <title>Roadster Rush 極速電能狂飆｜免費 3D 電動跑車網頁賽車遊戲</title>
 <meta name="description" content="免費 3D 網頁賽車遊戲！駕駛 Tesla Roadster 風格的電動超跑在夕陽海岸大橋上狂飆，啟動噴射推進器飛越車流、擦身超車、飛躍跳台、空中翻滾。免下載、手機電腦瀏覽器直接玩。">
 <meta name="keywords" content="Roadster 遊戲,Tesla Roadster 遊戲,特斯拉遊戲,賽車遊戲,網頁遊戲,免費線上遊戲,3D 賽車,手機遊戲,電動車遊戲,跑酷賽車,Roadster Rush">
@@ -62,6 +63,11 @@
 <meta name="twitter:title" content="Roadster Rush 極速電能狂飆 🏎️⚡">
 <meta name="twitter:description" content="夕陽海岸大橋上的 3D 極速狂飆！擦身超車、飛躍跳台、空中翻滾，你能跑多遠？">
 <meta name="twitter:image" content="https://tesla-roadster.sectools.tw/og.jpg">
+<!--SEO:END-->
+<link rel="alternate" hreflang="zh-Hant" href="https://tesla-roadster.sectools.tw/">
+<link rel="alternate" hreflang="en" href="https://tesla-roadster.sectools.tw/en/">
+<link rel="alternate" hreflang="ja" href="https://tesla-roadster.sectools.tw/ja/">
+<link rel="alternate" hreflang="x-default" href="https://tesla-roadster.sectools.tw/en/">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -243,6 +249,9 @@
   .achvList li b { display:block; } .achvList li span { font-size:13px; opacity:.75; }
   .achvList li:not(.got) { opacity:.6; }
   #skipHint { position:fixed; left:0; right:0; bottom:calc(26px + env(safe-area-inset-bottom)); text-align:center; font-size:13px; opacity:.7; pointer-events:none; display:none; letter-spacing:.1em; }
+  .langs { display:flex; justify-content:center; gap:14px; margin-top:10px; pointer-events:auto; font-size:12px; }
+  .langs a { color:rgba(255,255,255,.55); text-decoration:none; padding:2px 4px; }
+  .langs a.cur { color:#fff; border-bottom:1px solid var(--cyan); }
   #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; text-align:center; padding:24px; background:#0b0b14; z-index:9; }
 </style>
 </head>
@@ -290,6 +299,7 @@
       <button class="lbtn" type="button" id="achvBtn">成就</button>
     </div>
     <div class="fine">非官方粉絲作品 · 擦身超車、飛躍跳台、空中翻滾都能加分</div>
+    <nav class="langs" aria-label="Language"><a href="./" hreflang="zh-Hant" data-l="zh">中文</a><a href="en/" hreflang="en" data-l="en">English</a><a href="ja/" hreflang="ja" data-l="ja">日本語</a></nav>
   </div>
 </div>
 
@@ -325,6 +335,7 @@
 <div class="screen center hidden" id="about" role="dialog" aria-labelledby="aboutTitle">
   <article class="card aboutCard">
     <button class="ibtn closeAbout" id="aboutClose" aria-label="關閉"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg></button>
+<!--ABOUT:START-->
     <h2 id="aboutTitle">Roadster Rush 遊戲介紹</h2>
     <p><strong>Roadster Rush 極速電能狂飆</strong>是一款免費的 3D 網頁賽車遊戲。你將駕駛一台白色電動超跑（Tesla Roadster 風格），在夕陽下的海岸大橋上高速奔馳，閃避車流、擦身超車、飛躍跳台，挑戰最高分。不需要下載 App，手機和電腦的瀏覽器打開就能玩。</p>
     <h3>怎麼玩</h3>
@@ -360,6 +371,7 @@
       <dt>是 Tesla 官方遊戲嗎？</dt><dd>不是，這是非官方粉絲作品，與 Tesla, Inc. 無關。</dd>
     </dl>
     <p class="more">想拿高分？完整技巧請看 <a href="guide.html">Roadster Rush 攻略：高分技巧、三寶應對與噴射飛行教學</a>。<br>更多免費實用工具，歡迎造訪 <a href="https://sectools.tw" target="_blank" rel="noopener">Sectools.tw</a>。</p>
+<!--ABOUT:END-->
   </article>
 </div>
 <noscript><div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#0b0b14;padding:24px;text-align:center">Roadster Rush 是一款免費 3D 網頁賽車遊戲，需要啟用 JavaScript 才能遊玩。</div></noscript>
@@ -2012,6 +2024,7 @@ updateChunks(0); updateChunks(0); updateChunks(0); updateChunks(0); updateChunks
 placePlayer(0);
 state = 'menu';
 applyPaint(); renderPaints(); renderAchv();
+{ const L = (document.documentElement.lang || 'zh').slice(0, 2); document.querySelectorAll('.langs a').forEach(a => a.classList.toggle('cur', a.dataset.l === L)); }
 if (qualPref) setQuality(qualPref);
 const sb = $('startBtn'); sb.disabled = false; sb.textContent = 'START 出發';
 frame();

@@ -4,6 +4,8 @@
 
 **▶ 立即遊玩：<https://tesla-roadster.sectools.tw/>**　｜　📖 [完整攻略](https://tesla-roadster.sectools.tw/guide.html)
 
+🌏 [English](https://tesla-roadster.sectools.tw/en/) ・ [日本語](https://tesla-roadster.sectools.tw/ja/)
+
 ![Roadster Rush](og.jpg)
 
 ## 玩法
@@ -39,6 +41,16 @@
 - 低效能裝置自動切換流暢模式，右上角可手動切換 HD / SD
 
 本機測試：直接用瀏覽器開啟 `index.html` 即可（需要網路載入 Three.js 與字型）。
+
+### 多語系
+
+`index.html`（繁中）是唯一的原始檔，`en/index.html` 與 `ja/index.html` 由腳本產生，**不要直接改**。修改遊戲後執行：
+
+```bash
+python3 build-i18n.py
+```
+
+新增或改寫介面文字時，要同步更新 `build-i18n.py` 裡的 `STRINGS` 翻譯表；找不到原文時腳本會直接報錯，避免漏翻。攻略頁 `guide.html`、`en/guide.html`、`ja/guide.html` 為各自獨立的內容頁，共用 `guide.css`。
 
 ---
 

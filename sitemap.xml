@@ -1,15 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://tesla-roadster.sectools.tw/</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://tesla-roadster.sectools.tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tesla-roadster.sectools.tw/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tesla-roadster.sectools.tw/ja/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tesla-roadster.sectools.tw/en/"/>
+  </url>
+  <url>
+    <loc>https://tesla-roadster.sectools.tw/en/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://tesla-roadster.sectools.tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tesla-roadster.sectools.tw/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tesla-roadster.sectools.tw/ja/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tesla-roadster.sectools.tw/en/"/>
+  </url>
+  <url>
+    <loc>https://tesla-roadster.sectools.tw/ja/</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://tesla-roadster.sectools.tw/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tesla-roadster.sectools.tw/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tesla-roadster.sectools.tw/ja/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tesla-roadster.sectools.tw/en/"/>
   </url>
   <url>
     <loc>https://tesla-roadster.sectools.tw/guide.html</loc>
-    <lastmod>2026-10-26</lastmod>
+    <lastmod>2026-10-29</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://tesla-roadster.sectools.tw/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tesla-roadster.sectools.tw/en/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tesla-roadster.sectools.tw/ja/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tesla-roadster.sectools.tw/en/guide.html"/>
+  </url>
+  <url>
+    <loc>https://tesla-roadster.sectools.tw/en/guide.html</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://tesla-roadster.sectools.tw/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tesla-roadster.sectools.tw/en/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tesla-roadster.sectools.tw/ja/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tesla-roadster.sectools.tw/en/guide.html"/>
+  </url>
+  <url>
+    <loc>https://tesla-roadster.sectools.tw/ja/guide.html</loc>
+    <lastmod>2026-10-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="zh-Hant" href="https://tesla-roadster.sectools.tw/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tesla-roadster.sectools.tw/en/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://tesla-roadster.sectools.tw/ja/guide.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tesla-roadster.sectools.tw/en/guide.html"/>
   </url>
 </urlset>
