@@ -1470,23 +1470,30 @@ function updatePlay(dt) {
       roll = damp(roll, 0, 4, dt);
     } else {
       vy -= 24 * dt;
-      roll += steerIn * 7.2 * dt;
+      // landing assist: just above the ground the car snaps toward the nearest upright angle,
+      // and higher up it settles there whenever the player lets go
+      const upright = Math.round(roll / (Math.PI * 2)) * Math.PI * 2;
+      if (vy < 0 && y < 1.6) roll = damp(roll, upright, 10, dt);
+      else { roll += steerIn * 6.2 * dt; if (!steerIn && vy < 0 && y < 3.5) roll = damp(roll, upright, 5, dt); }
     }
     y += vy * dt; airTime += dt;
     lat = clamp(lat, -(BARRIER + 3), BARRIER + 3);
     if (y <= 0) {
       y = 0; air = false;
       const r = wrapPi(roll), flips = Math.round(Math.abs(roll) / (Math.PI * 2));
-      if (Math.abs(r) > 0.9) { crash('落地翻車了！'); return; }
-      if (Math.abs(lat) > BARRIER - 0.4) { crash('飛出護欄了！'); return; }
-      roll = r; vy = 0; shake = Math.min(1, 0.3 + airTime * 0.4); sfx.land();
+      if (Math.abs(r) > 1.75) { crash('落地翻車了！'); return; }          // > ~100°: rolled onto the roof/side
+      if (Math.abs(lat) > BARRIER + 1.2) { crash('飛出護欄了！'); return; } // fully cleared the barrier
+      const sketchy = Math.abs(r) > 0.6;                                   // 35°–100°: saved, with a penalty
+      lat = clamp(lat, -(BARRIER - PW / 2 - 0.1), BARRIER - PW / 2 - 0.1);
+      roll = r; vy = 0; shake = sketchy ? 1 : Math.min(1, 0.3 + airTime * 0.4); sfx.land(); buzz(sketchy ? [40, 30, 60] : 30);
+      if (sketchy) { speed *= 0.85; popup('驚險落地！', '車身歪了，速度降低', 'red'); }
       for (const sd of [-1, 1]) for (let i = 0; i < 8; i++) emit(rearWheelPos(sd, tmpV), { vel: new THREE.Vector3(sd * rnd(1, 5), rnd(0.5, 2), rnd(2, 6)), life: rnd(0.6, 1.2), size: 0.8, grow: 4, color: '#d8d2cc', opacity: 0.6 });
       if (airTime > 0.45) {
-        const pts = Math.round(airTime * 350) + flips * 1500;
+        const pts = Math.round((Math.round(airTime * 350) + flips * 1500) * (sketchy ? 0.5 : 1));
         bumpCombo(); addScore(pts); boost = Math.min(100, boost + 15 + flips * 15);
         if (flips) unlock('roll');
         if (flips) { popup(flips > 1 ? `BARREL ROLL ×${flips}` : 'BARREL ROLL!', `+${pts * Math.max(1, combo)}`, 'gold big'); sfx.stunt(); }
-        else popup(`${flight ? 'FLIGHT' : 'AIR'} ${airTime.toFixed(1)}s`, `+${pts * Math.max(1, combo)}`, 'cyan');
+        else if (!sketchy) popup(`${flight ? 'FLIGHT' : 'AIR'} ${airTime.toFixed(1)}s`, `+${pts * Math.max(1, combo)}`, 'cyan');
       }
       flight = false;
     }
