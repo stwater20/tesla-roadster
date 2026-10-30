@@ -352,6 +352,7 @@
     <h3>Features</h3>
     <ul>
       <li>Real-time 3D: sunset sky, reflective sea, palm-lined coast, city skyline and bloom lighting.</li>
+      <li>Day-to-night cycle: the sun sets as you drive until you're cruising under the stars with headlights on, backed by a procedurally generated synthwave soundtrack.</li>
       <li>Opening stunt inspired by the 2026 Roadster reveal: a curling wall ramp and a 180° roll landing.</li>
       <li>Smart traffic that changes lanes; difficulty and top speed rise gradually with distance.</li>
       <li>Top speed around 330 km/h, over 450 km/h with BOOST, with speed lines and light trails.</li>
@@ -477,7 +478,8 @@ const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.deg
 SU.sunPosition.value.copy(sunDir);
 const pmrem = new THREE.PMREMGenerator(renderer);
 const envScene = new THREE.Scene(); envScene.add(sky);
-scene.environment = pmrem.fromScene(envScene, 0.02).texture;
+let envRT = pmrem.fromScene(envScene, 0.02);
+scene.environment = envRT.texture;
 const skyScene = new THREE.Scene(); skyScene.add(sky);
 const skyCam = new THREE.PerspectiveCamera(62, innerWidth / innerHeight, 1, 20000);
 
@@ -806,6 +808,7 @@ water.rotation.x = -Math.PI / 2; water.position.y = -6.5;
 scene.add(water);
 
 const far = new THREE.Group(); scene.add(far);
+const cityMat = new THREE.MeshStandardMaterial({ color: '#2b2340', roughness: 0.6, metalness: 0.3, emissive: '#ffffff', emissiveMap: windowsTex, emissiveIntensity: 0.9, fog: false });
 {
   // hazy layered ridges: back layers lighter (aerial perspective)
   const layers = [['#b48a9e', 3400, 0.9], ['#8f6a86', 2900, 1.0], ['#6a4f6e', 2450, 1.1]];
@@ -826,7 +829,7 @@ const far = new THREE.Group(); scene.add(far);
     }
   }
   const N = 140, geo = new THREE.BoxGeometry(1, 1, 1);
-  const mat = new THREE.MeshStandardMaterial({ color: '#2b2340', roughness: 0.6, metalness: 0.3, emissive: '#ffffff', emissiveMap: windowsTex, emissiveIntensity: 0.9, fog: false });
+  const mat = cityMat;
   const city = new THREE.InstancedMesh(geo, mat, N), o = new THREE.Object3D();
   for (let i = 0; i < N; i++) {
     const a = rnd(0.45, 1.25), R = rnd(2600, 3300), h = Math.random() < 0.15 ? rnd(140, 260) : rnd(25, 110), w = rnd(30, 80);
@@ -1135,6 +1138,7 @@ function resetRun() {
   ps = 0; lat = laneX(1); latV = 0; y = 0; vy = 0; speed = 0; roll = 0; air = false; airTime = 0; onRamp = null;
   jet = 100; jetting = false; flight = false; jetLock = false; sbWarned = false; nextWrong = 0; sbDodged = 0;
   removeIntroMesh(); player.rotation.set(0, 0, 0); player.userData.shadow.visible = true;
+  resetTOD();
   boost = 60; boosting = false; score = 0; combo = 0; comboT = 0; nearCount = 0; topSpeed = 0; startS = 0;
   shake = 0; timeScale = 1; crashT = 0; nextRamp = 520; nextPad = 300; scrapeT = 0;
   player.userData.chassis.rotation.set(0, 0, 0);
@@ -1189,8 +1193,54 @@ function initAudio() {
     jetG = AC.createGain(); jetG.gain.value = 0; wn.connect(hp); hp.connect(jetG); jetG.connect(AC.destination);
   } catch (e) { AC = null; }
 }
+// ----- procedural synthwave loop (Am – F – C – G, 104 BPM) -----
+let music = null;
+const CHORDS = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]];
+const mtof = n => 440 * Math.pow(2, (n - 69) / 12);
+function startMusic() {
+  if (!AC || music) return;
+  const out = AC.createGain(); out.gain.value = 0;
+  const comp = AC.createDynamicsCompressor(); out.connect(comp); comp.connect(AC.destination);
+  music = { out, next: AC.currentTime + 0.15, step: 0 };
+}
+function mNote(freq, t, dur, type, vol, cutoff) {
+  const o = AC.createOscillator(), g = AC.createGain(), f = AC.createBiquadFilter();
+  o.type = type; o.frequency.value = freq; f.type = 'lowpass'; f.frequency.value = cutoff;
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(f); f.connect(g); g.connect(music.out); o.start(t); o.stop(t + dur + 0.05);
+}
+function mNoise(t, dur, vol, type, freq) {
+  const src = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain();
+  src.buffer = noiseBuf; f.type = type; f.frequency.value = freq;
+  g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(f); f.connect(g); g.connect(music.out); src.start(t, Math.random()); src.stop(t + dur + 0.02);
+}
+function mKick(t) {
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.frequency.setValueAtTime(130, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.18);
+  g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+  o.connect(g); g.connect(music.out); o.start(t); o.stop(t + 0.32);
+}
+function scheduleMusic() {
+  const sixteenth = 60 / 104 / 4;
+  while (music.next < AC.currentTime + 0.15) {
+    const t = music.next, st = music.step, s16 = st % 16, chord = CHORDS[Math.floor(st / 16) % 4];
+    if (s16 === 0) for (const n of chord) mNote(mtof(n), t, sixteenth * 15, 'triangle', 0.05, 1400);       // pad
+    if (s16 % 2 === 0) mNote(mtof(chord[0] - 24), t, sixteenth * 1.8, 'sawtooth', 0.32, 420);              // bass
+    mNote(mtof(chord[s16 % 3] + (s16 % 6 < 3 ? 12 : 24)), t, sixteenth * 0.9, 'square', 0.05, 2200);      // arp
+    if (s16 === 0 || s16 === 8) mKick(t);
+    if (s16 === 4 || s16 === 12) mNoise(t, 0.16, 0.28, 'bandpass', 1800);                                 // snare
+    if (s16 % 4 === 2) mNoise(t, 0.04, 0.08, 'highpass', 7000);                                           // hat
+    music.next += sixteenth; music.step++;
+  }
+}
 function updateAudio() {
   if (!AC) return;
+  if (music) {
+    const playing = state === 'play' || state === 'countdown' || state === 'intro' || state === 'crashed';
+    music.out.gain.setTargetAtTime(muted || state === 'pause' ? 0 : playing ? 0.075 : 0.035, AC.currentTime, 0.4);
+    if (!muted && state !== 'pause') scheduleMusic(); else music.next = AC.currentTime + 0.1;
+  }
   const t = AC.currentTime, p = speed / 110, live = !muted && (state === 'play' || state === 'countdown' || state === 'intro');
   oscA.frequency.setTargetAtTime(40 + p * 170, t, 0.05);
   oscB.frequency.setTargetAtTime(160 + p * 900 * (boosting ? 1.3 : 1), t, 0.05);
@@ -1351,7 +1401,7 @@ function skipIntro() {
 let lastCd = 3;
 function showCount(t) { $('countdown').innerHTML = `<span>${t}</span>`; }
 function startRun() {
-  initAudio(); resetRun();
+  initAudio(); startMusic(); resetRun();
   show('menu', false); show('overScreen', false); show('pauseScreen', false);
   playTime = 0; hintIdx = 0;
   if (!introDone) { startIntro(); return; }
@@ -1779,6 +1829,50 @@ function updateFX(dt) {
   if (state === 'countdown' && cdT < 1.6) for (const sd of [-1, 1]) if (Math.random() < 0.7) emit(rearWheelPos(sd, tmpV), { vel: new THREE.Vector3(sd * rnd(0.5, 2), rnd(0.5, 1.5), rnd(1, 3)), life: rnd(1, 1.8), size: 0.7, grow: 4, color: '#e9e4de', opacity: 0.45 });
 }
 
+// ----- time of day: the sun sets as you drive; full night by ~7.5 km -----
+const stars = (() => {
+  const n = 1400, pos = new Float32Array(n * 3), v = new THREE.Vector3();
+  for (let i = 0; i < n; i++) { v.randomDirection(); if (v.y < 0.02) v.y = Math.abs(v.y) + 0.02; v.normalize().multiplyScalar(9000); pos.set([v.x, v.y, v.z], i * 3); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const m = new THREE.PointsMaterial({ color: '#ffffff', size: 1.6, sizeAttenuation: false, transparent: true, opacity: 0, depthWrite: false, fog: false });
+  const pts = new THREE.Points(g, m); pts.frustumCulled = false; skyScene.add(pts); return pts;
+})();
+const headlight = new THREE.SpotLight('#eaf2ff', 0, 110, 0.42, 0.55, 1.1);
+headlight.position.set(0, 0.75, -2.0); headlight.target.position.set(0, 0, -40);
+player.add(headlight, headlight.target);
+const TOD = {
+  dusk: { fog: new THREE.Color('#d9967f'), hs: new THREE.Color('#ffd6bd'), hg: new THREE.Color('#3b4f6b'), sun: new THREE.Color('#ffd2a8') },
+  night: { fog: new THREE.Color('#141a2c'), hs: new THREE.Color('#56679c'), hg: new THREE.Color('#0e121c'), sun: new THREE.Color('#9fb4ff') },
+};
+let tod = 0, todEnvLevel = 0, nightShown = false;
+function regenEnv() {
+  skyScene.remove(sky); envScene.add(sky);
+  const rt = pmrem.fromScene(envScene, 0.02);
+  envScene.remove(sky); skyScene.add(sky);
+  envRT.dispose(); envRT = rt; scene.environment = rt.texture;
+}
+function applyTOD(t) {
+  const L = THREE.MathUtils.lerp;
+  sunDir.setFromSphericalCoords(1, THREE.MathUtils.degToRad(90 - L(1.6, -5.5, t)), THREE.MathUtils.degToRad(188));
+  SU.sunPosition.value.copy(sunDir);
+  scene.fog.color.copy(TOD.dusk.fog).lerp(TOD.night.fog, t); scene.fog.far = L(1150, 820, t);
+  hemi.color.copy(TOD.dusk.hs).lerp(TOD.night.hs, t); hemi.groundColor.copy(TOD.dusk.hg).lerp(TOD.night.hg, t); hemi.intensity = L(1.6, 0.5, t);
+  sun.color.copy(TOD.dusk.sun).lerp(TOD.night.sun, t); sun.intensity = L(4.2, 0.85, t);
+  M.bulb.emissiveIntensity = L(9, 16, t); cityMat.emissiveIntensity = L(0.9, 3.2, t);
+  stars.material.opacity = THREE.MathUtils.smoothstep(t, 0.35, 0.9);
+  headlight.intensity = THREE.MathUtils.smoothstep(t, 0.25, 0.7) * 90;
+  $('grade').style.opacity = L(1, 0.3, t).toFixed(3);
+  const level = Math.round(t * 4);
+  if (level !== todEnvLevel) { todEnvLevel = level; regenEnv(); }
+}
+function updateTOD(real) {
+  const target = (state === 'play' || state === 'crashed' || state === 'over' || state === 'pause') ? clamp((ps - startS - 2500) / 5000, 0, 1) : 0;
+  const next = damp(tod, target, 0.6, real);
+  if (Math.abs(next - tod) > 1e-4) { tod = next; applyTOD(tod); }
+  if (state === 'play' && !nightShown && tod > 0.7) { nightShown = true; popup('NIGHT DRIVE', 'Night has fallen', 'cyan'); }
+}
+function resetTOD() { tod = 0; nightShown = false; applyTOD(0); }
+
 function updateWorldAnchors(t) {
   const px = player.position.x, pz = player.position.z;
   water.position.x = px; water.position.z = pz;
@@ -1787,6 +1881,7 @@ function updateWorldAnchors(t) {
   sun.position.copy(player.position).addScaledVector(lightDir, 120);
   sun.target.position.copy(player.position);
   padTex.offset.y = -t * 1.6;
+  stars.rotation.y = t * 0.002;
 }
 
 // ================= main loop =================
@@ -1822,6 +1917,7 @@ function simulate(real) {
   }
   updateCamera(dt, real);
   updateWorldAnchors(elapsed);
+  updateTOD(real);
   skyCam.quaternion.copy(camera.quaternion);
   if (skyCam.fov !== camera.fov || skyCam.aspect !== camera.aspect) { skyCam.fov = camera.fov; skyCam.aspect = camera.aspect; skyCam.updateProjectionMatrix(); }
   if (state === 'play' || state === 'crashed' || state === 'countdown') updateHUD();

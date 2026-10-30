@@ -102,6 +102,7 @@ STRINGS = [
     # --- best / unlocks / reasons / popups ---
     ("`最佳紀錄 ${best.toLocaleString()}`", "`Best ${best.toLocaleString()}`", "`ベスト ${best.toLocaleString()}`"),
     ("'解鎖新車色：' + unlocked.map(p => p.name).join('、') + '！'", "'New paint unlocked: ' + unlocked.map(p => p.name).join(', ') + '!'", "'新しいカラー解除：' + unlocked.map(p => p.name).join('、') + '！'"),
+    ("popup('NIGHT DRIVE', '夜幕降臨', 'cyan')", "popup('NIGHT DRIVE', 'Night has fallen', 'cyan')", "popup('NIGHT DRIVE', '夜になった', 'cyan')"),
     ("popup('THRUSTERS!', '噴射推進器啟動', 'cyan')", "popup('THRUSTERS!', 'Cold-gas thrusters engaged', 'cyan')", "popup('THRUSTERS!', 'ジェット噴射', 'cyan')"),
     ("crash('落地翻車了！')", "crash('Flipped on landing!')", "crash('着地失敗！')"),
     ("crash('飛出護欄了！')", "crash('Flew off the bridge!')", "crash('ガードレールの外へ！')"),
@@ -197,6 +198,7 @@ ABOUT = {
     <h3>Features</h3>
     <ul>
       <li>Real-time 3D: sunset sky, reflective sea, palm-lined coast, city skyline and bloom lighting.</li>
+      <li>Day-to-night cycle: the sun sets as you drive until you're cruising under the stars with headlights on, backed by a procedurally generated synthwave soundtrack.</li>
       <li>Opening stunt inspired by the 2026 Roadster reveal: a curling wall ramp and a 180° roll landing.</li>
       <li>Smart traffic that changes lanes; difficulty and top speed rise gradually with distance.</li>
       <li>Top speed around 330 km/h, over 450 km/h with BOOST, with speed lines and light trails.</li>
@@ -232,6 +234,7 @@ ABOUT = {
     <h3>特徴</h3>
     <ul>
       <li>リアルタイム 3D：夕焼け空、反射する海、ヤシの木の海岸、街のスカイライン、ブルーム効果。</li>
+      <li>昼から夜へ：走るほど日が沈み、やがて星空の下をヘッドライトで疾走。リアルタイム生成のシンセウェイヴ BGM 付き。</li>
       <li>2026 年のロードスター発表会を再現したオープニング：カールする壁ランプから 180° 回転して着地。</li>
       <li>車線変更する賢い交通。距離に応じて難易度と最高速度が少しずつ上昇。</li>
       <li>最高速度は約 330 km/h、BOOST で 450 km/h 超え。スピードラインと光の軌跡も。</li>
